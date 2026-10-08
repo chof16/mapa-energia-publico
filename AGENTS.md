@@ -123,6 +123,8 @@ preserve its source-specific reuse terms.
 `Web checks` (Vitest and the type-checked build) for pull requests and pushes
 to `main`. Keep these job names stable: branch protection requires them.
 CI uses synthetic data and does not need production secrets or downloaded maps.
+Python CI uses an available uv-managed Python 3.14 build; the local Arch patch
+in `.python-version` may not be available as a managed download.
 
 Run from the repository root after installing dependencies:
 
