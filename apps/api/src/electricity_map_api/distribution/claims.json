@@ -1,0 +1,1143 @@
+{
+  "snapshot_date": "2026-10-07",
+  "complete": false,
+  "distributors": [
+    {
+      "code": "R1-001",
+      "name": "I-DE Redes Eléctricas Inteligentes, SAU",
+      "registry_source_url": "https://www.boe.es/boe/dias/2026/06/12/pdfs/BOE-A-2026-12790.pdf"
+    },
+    {
+      "code": "R1-002",
+      "name": "UFD Distribución de Electricidad, SA",
+      "registry_source_url": "https://www.boe.es/boe/dias/2026/06/12/pdfs/BOE-A-2026-12790.pdf"
+    },
+    {
+      "code": "R1-005",
+      "name": "Viesgo Distribución Eléctrica, SL",
+      "registry_source_url": "https://www.boe.es/boe/dias/2026/06/12/pdfs/BOE-A-2026-12790.pdf"
+    },
+    {
+      "code": "R1-008",
+      "name": "Hidrocantábrico Distribución Eléctrica, SAU",
+      "registry_source_url": "https://www.boe.es/boe/dias/2026/06/12/pdfs/BOE-A-2026-12790.pdf"
+    },
+    {
+      "code": "R1-027",
+      "name": "Compañía Melillense de Gas y Electricidad, SA",
+      "registry_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-4506"
+    },
+    {
+      "code": "R1-030",
+      "name": "Empresa de Alumbrado Eléctrico de Ceuta Distribución, SAU",
+      "registry_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-4506"
+    },
+    {
+      "code": "R1-299",
+      "name": "EDistribución Redes Digitales, SLU",
+      "registry_source_url": "https://www.boe.es/boe/dias/2026/06/12/pdfs/BOE-A-2026-12790.pdf"
+    }
+  ],
+  "group_associations": [
+    {
+      "distributor_code": "R1-001",
+      "group_name": "Iberdrola",
+      "evidence": {
+        "source_title": "Estructura societaria del Grupo Iberdrola | Iberdrola",
+        "source_url": "https://www.iberdrola.com/gobierno-corporativo/estructura",
+        "published_on": null,
+        "checked_on": "2026-10-04",
+        "relationship_claim": "Iberdrola identifica a i-DE como filial al 100 % de Iberdrola España."
+      }
+    },
+    {
+      "distributor_code": "R1-002",
+      "group_name": "Naturgy",
+      "evidence": {
+        "source_title": "UFD, distribuidora eléctrica del Grupo Naturgy | CNMC",
+        "source_url": "https://www.cnmc.es/prensa/archivo-ufd-20260519",
+        "published_on": "2026-05-19",
+        "checked_on": "2026-10-04",
+        "relationship_claim": "La CNMC identifica a UFD como distribuidora eléctrica del Grupo Naturgy."
+      }
+    },
+    {
+      "distributor_code": "R1-005",
+      "group_name": "EDP",
+      "evidence": {
+        "source_title": "Política de Compliance Penal de EDP España, anexo I | EDP",
+        "source_url": "https://www.edp.com/sites/default/files/document/2025-09/Pol%C3%ADtica%20de%20Compliance%20Penal%20EDPR%20%26%20EDP%20Espa%C3%B1a_julio%202025.pdf",
+        "published_on": "2025-07-25",
+        "checked_on": "2026-10-04",
+        "relationship_claim": "EDP enumera Viesgo Distribución Eléctrica entre las empresas de EDP España."
+      }
+    },
+    {
+      "distributor_code": "R1-008",
+      "group_name": "EDP",
+      "evidence": {
+        "source_title": "Política de Compliance Penal de EDP España, anexo I | EDP",
+        "source_url": "https://www.edp.com/sites/default/files/document/2025-09/Pol%C3%ADtica%20de%20Compliance%20Penal%20EDPR%20%26%20EDP%20Espa%C3%B1a_julio%202025.pdf",
+        "published_on": "2025-07-25",
+        "checked_on": "2026-10-04",
+        "relationship_claim": "EDP enumera Hidrocantábrico Distribución Eléctrica entre las empresas de EDP España."
+      }
+    },
+    {
+      "distributor_code": "R1-299",
+      "group_name": "Endesa",
+      "evidence": {
+        "source_title": "Sociedades de Endesa | Endesa",
+        "source_url": "https://www.endesa.com/es/sobre-endesa/quienes-somos/sociedades",
+        "published_on": null,
+        "checked_on": "2026-10-04",
+        "relationship_claim": "Endesa incluye Edistribución Redes Digitales, S.L.U. con control del 100 %."
+      }
+    }
+  ],
+  "claims": [
+    {
+      "id": "C0001",
+      "province_code": "01",
+      "distributor_code": "R1-001",
+      "status": "accepted",
+      "decision_reason": "i-DE: subestación Puentelarrá de 132 kV existente y de su titularidad en el proyecto de Lantarón (Álava); la evacuación fotovoltaica era una solicitud ajena.",
+      "review_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-27432",
+      "checked_on": "2026-10-07",
+      "evidence": {
+        "source_title": "Subestación Puentelarrá | BOE-B-2026-27432",
+        "source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-27432",
+        "published_on": "2026-08-20",
+        "checked_on": "2026-10-07",
+        "geographic_claim": "i-DE: subestación Puentelarrá de 132 kV existente y de su titularidad en el proyecto de Lantarón (Álava); la evacuación fotovoltaica era una solicitud ajena.",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0002",
+      "province_code": "02",
+      "distributor_code": "R1-299",
+      "status": "accepted",
+      "decision_reason": "e-distribución: partes de las provincias de Murcia, Albacete, Ciudad Real, Cáceres, A Coruña, Ourense y León.",
+      "review_source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+      "checked_on": "2026-10-03",
+      "evidence": {
+        "source_title": "Qué es el CUPS, dónde encontrarlo y por qué te importa | Endesa",
+        "source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+        "published_on": "2022-03-01",
+        "checked_on": "2026-10-03",
+        "geographic_claim": "e-distribución: partes de las provincias de Murcia, Albacete, Ciudad Real, Cáceres, A Coruña, Ourense y León.",
+        "confidence": "group_first_party_reported"
+      }
+    },
+    {
+      "id": "C0003",
+      "province_code": "03",
+      "distributor_code": "R1-001",
+      "status": "accepted",
+      "decision_reason": "i-DE: línea existente Xixona-Rabasa de 132 kV y subestación ST Xixona, identificadas en el proyecto de Mutxamel (Alicante); la nueva conexión descrita no se presenta como construida.",
+      "review_source_url": "https://dogv.gva.es/datos/2025/01/14/pdf/2024_14076_es.pdf",
+      "checked_on": "2026-10-05",
+      "evidence": {
+        "source_title": "Línea Xixona-Rabasa y ST Xixona | DOGV 10024/2025",
+        "source_url": "https://dogv.gva.es/datos/2025/01/14/pdf/2024_14076_es.pdf",
+        "published_on": "2025-01-14",
+        "checked_on": "2026-10-05",
+        "geographic_claim": "i-DE: línea existente Xixona-Rabasa de 132 kV y subestación ST Xixona, identificadas en el proyecto de Mutxamel (Alicante); la nueva conexión descrita no se presenta como construida.",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0004",
+      "province_code": "04",
+      "distributor_code": "R1-299",
+      "status": "accepted",
+      "decision_reason": "e-distribución: apoyo existente de la línea Bayarque en el trazado entre Purchena y Oria (Almería); la nueva acometida solo fue autorizada.",
+      "review_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2021-44618",
+      "checked_on": "2026-10-07",
+      "evidence": {
+        "source_title": "Línea Bayarque | BOE-B-2021-44618",
+        "source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2021-44618",
+        "published_on": "2021-11-03",
+        "checked_on": "2026-10-07",
+        "geographic_claim": "e-distribución: apoyo existente de la línea Bayarque en el trazado entre Purchena y Oria (Almería); la nueva acometida solo fue autorizada.",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0005",
+      "province_code": "05",
+      "distributor_code": "R1-001",
+      "status": "accepted",
+      "decision_reason": "i-DE: centro de transformación Ctra. de Candeleda y líneas existentes objeto de reforma en Arenas de San Pedro (Ávila); no consta ejecutada la reforma.",
+      "review_source_url": "https://bocyl.jcyl.es/boletines/2024/04/24/pdf/BOCYL-D-24042024-7.pdf",
+      "checked_on": "2026-10-07",
+      "evidence": {
+        "source_title": "Reforma de CT en Arenas de San Pedro | BOCYL-D-24042024-7",
+        "source_url": "https://bocyl.jcyl.es/boletines/2024/04/24/pdf/BOCYL-D-24042024-7.pdf",
+        "published_on": "2024-04-24",
+        "checked_on": "2026-10-07",
+        "geographic_claim": "i-DE: centro de transformación Ctra. de Candeleda y líneas existentes objeto de reforma en Arenas de San Pedro (Ávila); no consta ejecutada la reforma.",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0006",
+      "province_code": "06",
+      "distributor_code": "R1-299",
+      "status": "accepted",
+      "decision_reason": "e-distribución: buena parte de la provincia de Badajoz.",
+      "review_source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+      "checked_on": "2026-10-03",
+      "evidence": {
+        "source_title": "Qué es el CUPS, dónde encontrarlo y por qué te importa | Endesa",
+        "source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+        "published_on": "2022-03-01",
+        "checked_on": "2026-10-03",
+        "geographic_claim": "e-distribución: buena parte de la provincia de Badajoz.",
+        "confidence": "group_first_party_reported"
+      }
+    },
+    {
+      "id": "C0007",
+      "province_code": "07",
+      "distributor_code": "R1-299",
+      "status": "accepted",
+      "decision_reason": "e-distribución: líneas de media tensión Mediterran, Bou y Pedro existentes junto a la subestación Mercadal, en Es Mercadal (Illes Balears); no consta ejecutada la variante autorizada.",
+      "review_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2024-22592",
+      "checked_on": "2026-10-07",
+      "evidence": {
+        "source_title": "Líneas Mediterran, Bou y Pedro | BOE-B-2024-22592",
+        "source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2024-22592",
+        "published_on": "2024-06-17",
+        "checked_on": "2026-10-07",
+        "geographic_claim": "e-distribución: líneas de media tensión Mediterran, Bou y Pedro existentes junto a la subestación Mercadal, en Es Mercadal (Illes Balears); no consta ejecutada la variante autorizada.",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0008",
+      "province_code": "08",
+      "distributor_code": "R1-299",
+      "status": "accepted",
+      "decision_reason": "e-distribución: derivación aérea existente a la subestación La Geltrú en Vilanova i la Geltrú (Barcelona); la repotenciación descrita era una solicitud.",
+      "review_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2022-15582",
+      "checked_on": "2026-10-05",
+      "evidence": {
+        "source_title": "Repotenciación de la entrada a SE La Geltrú | BOE-B-2022-15582",
+        "source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2022-15582",
+        "published_on": "2022-05-18",
+        "checked_on": "2026-10-05",
+        "geographic_claim": "e-distribución: derivación aérea existente a la subestación La Geltrú en Vilanova i la Geltrú (Barcelona); la repotenciación descrita era una solicitud.",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0009",
+      "province_code": "10",
+      "distributor_code": "R1-299",
+      "status": "accepted",
+      "decision_reason": "e-distribución: partes de las provincias de Murcia, Albacete, Ciudad Real, Cáceres, A Coruña, Ourense y León.",
+      "review_source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+      "checked_on": "2026-10-03",
+      "evidence": {
+        "source_title": "Qué es el CUPS, dónde encontrarlo y por qué te importa | Endesa",
+        "source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+        "published_on": "2022-03-01",
+        "checked_on": "2026-10-03",
+        "geographic_claim": "e-distribución: partes de las provincias de Murcia, Albacete, Ciudad Real, Cáceres, A Coruña, Ourense y León.",
+        "confidence": "group_first_party_reported"
+      }
+    },
+    {
+      "id": "C0010",
+      "province_code": "10",
+      "distributor_code": "R1-001",
+      "status": "accepted",
+      "decision_reason": "i-DE: provincia de Cáceres.",
+      "review_source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+      "checked_on": "2026-10-03",
+      "evidence": {
+        "source_title": "Qué es el CUPS, dónde encontrarlo y por qué te importa | Endesa",
+        "source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+        "published_on": "2022-03-01",
+        "checked_on": "2026-10-03",
+        "geographic_claim": "i-DE: provincia de Cáceres.",
+        "confidence": "other_operator_reported"
+      }
+    },
+    {
+      "id": "C0011",
+      "province_code": "11",
+      "distributor_code": "R1-299",
+      "status": "accepted",
+      "decision_reason": "e-distribución: subestación Puerto Real de 132 kV de su propiedad, conectada a la red de distribución y en operación, en Puerto Real (Cádiz).",
+      "review_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-25688",
+      "checked_on": "2026-10-07",
+      "evidence": {
+        "source_title": "Subestación Puerto Real | BOE-B-2026-25688",
+        "source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-25688",
+        "published_on": "2026-07-30",
+        "checked_on": "2026-10-07",
+        "geographic_claim": "e-distribución: subestación Puerto Real de 132 kV de su propiedad, conectada a la red de distribución y en operación, en Puerto Real (Cádiz).",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0012",
+      "province_code": "13",
+      "distributor_code": "R1-299",
+      "status": "accepted",
+      "decision_reason": "e-distribución: partes de las provincias de Murcia, Albacete, Ciudad Real, Cáceres, A Coruña, Ourense y León.",
+      "review_source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+      "checked_on": "2026-10-03",
+      "evidence": {
+        "source_title": "Qué es el CUPS, dónde encontrarlo y por qué te importa | Endesa",
+        "source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+        "published_on": "2022-03-01",
+        "checked_on": "2026-10-03",
+        "geographic_claim": "e-distribución: partes de las provincias de Murcia, Albacete, Ciudad Real, Cáceres, A Coruña, Ourense y León.",
+        "confidence": "group_first_party_reported"
+      }
+    },
+    {
+      "id": "C0013",
+      "province_code": "13",
+      "distributor_code": "R1-002",
+      "status": "accepted",
+      "decision_reason": "UFD: provincia de Ciudad Real.",
+      "review_source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+      "checked_on": "2026-10-03",
+      "evidence": {
+        "source_title": "Qué es el CUPS, dónde encontrarlo y por qué te importa | Endesa",
+        "source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+        "published_on": "2022-03-01",
+        "checked_on": "2026-10-03",
+        "geographic_claim": "UFD: provincia de Ciudad Real.",
+        "confidence": "other_operator_reported"
+      }
+    },
+    {
+      "id": "C0014",
+      "province_code": "14",
+      "distributor_code": "R1-299",
+      "status": "accepted",
+      "decision_reason": "e-distribución: apoyo existente A558293 de la línea Peñaflo_1 en el proyecto de Palma del Río y Hornachuelos (Córdoba); no se acredita la construcción de la nueva línea.",
+      "review_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-7401",
+      "checked_on": "2026-10-07",
+      "evidence": {
+        "source_title": "Línea Peñaflo_1 | BOE-B-2026-7401",
+        "source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-7401",
+        "published_on": "2026-03-10",
+        "checked_on": "2026-10-07",
+        "geographic_claim": "e-distribución: apoyo existente A558293 de la línea Peñaflo_1 en el proyecto de Palma del Río y Hornachuelos (Córdoba); no se acredita la construcción de la nueva línea.",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0015",
+      "province_code": "15",
+      "distributor_code": "R1-299",
+      "status": "accepted",
+      "decision_reason": "e-distribución: partes de las provincias de Murcia, Albacete, Ciudad Real, Cáceres, A Coruña, Ourense y León.",
+      "review_source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+      "checked_on": "2026-10-03",
+      "evidence": {
+        "source_title": "Qué es el CUPS, dónde encontrarlo y por qué te importa | Endesa",
+        "source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+        "published_on": "2022-03-01",
+        "checked_on": "2026-10-03",
+        "geographic_claim": "e-distribución: partes de las provincias de Murcia, Albacete, Ciudad Real, Cáceres, A Coruña, Ourense y León.",
+        "confidence": "group_first_party_reported"
+      }
+    },
+    {
+      "id": "C0016",
+      "province_code": "15",
+      "distributor_code": "R1-002",
+      "status": "accepted",
+      "decision_reason": "UFD: obra autorizada en una línea eléctrica existente en Aldea Merexo, Muxía (A Coruña).",
+      "review_source_url": "https://www.xunta.gal/dog/Publicados/2024/20240318/AnuncioG0692-260224-0003_es.html",
+      "checked_on": "2026-10-04",
+      "evidence": {
+        "source_title": "Instalación de distribución de UFD en Aldea Merexo (Muxía) | DOG 55/2024",
+        "source_url": "https://www.xunta.gal/dog/Publicados/2024/20240318/AnuncioG0692-260224-0003_es.html",
+        "published_on": "2024-03-18",
+        "checked_on": "2026-10-04",
+        "geographic_claim": "UFD: obra autorizada en una línea eléctrica existente en Aldea Merexo, Muxía (A Coruña).",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0017",
+      "province_code": "16",
+      "distributor_code": "R1-002",
+      "status": "accepted",
+      "decision_reason": "UFD: provincia de Cuenca.",
+      "review_source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+      "checked_on": "2026-10-03",
+      "evidence": {
+        "source_title": "Qué es el CUPS, dónde encontrarlo y por qué te importa | Endesa",
+        "source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+        "published_on": "2022-03-01",
+        "checked_on": "2026-10-03",
+        "geographic_claim": "UFD: provincia de Cuenca.",
+        "confidence": "other_operator_reported"
+      }
+    },
+    {
+      "id": "C0018",
+      "province_code": "17",
+      "distributor_code": "R1-299",
+      "status": "accepted",
+      "decision_reason": "e-distribución: modificación autorizada de la repotenciación de la línea existente Empordanet-Bellcaire en Palafrugell, Torrent, Forallac, Ullastret y Fontanilles (Girona).",
+      "review_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-11760",
+      "checked_on": "2026-10-05",
+      "evidence": {
+        "source_title": "Repotenciación de la línea Empordanet-Bellcaire | BOE-B-2026-11760",
+        "source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-11760",
+        "published_on": "2026-04-16",
+        "checked_on": "2026-10-05",
+        "geographic_claim": "e-distribución: modificación autorizada de la repotenciación de la línea existente Empordanet-Bellcaire en Palafrugell, Torrent, Forallac, Ullastret y Fontanilles (Girona).",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0019",
+      "province_code": "18",
+      "distributor_code": "R1-299",
+      "status": "accepted",
+      "decision_reason": "e-distribución: apoyos existentes de la línea Montefrío en los parajes Fuente Nueva y Los Gitanos, Montefrío (Granada); el cierre solicitado no consta construido.",
+      "review_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-13418",
+      "checked_on": "2026-10-07",
+      "evidence": {
+        "source_title": "Línea Montefrío | BOE-B-2026-13418",
+        "source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-13418",
+        "published_on": "2026-04-28",
+        "checked_on": "2026-10-07",
+        "geographic_claim": "e-distribución: apoyos existentes de la línea Montefrío en los parajes Fuente Nueva y Los Gitanos, Montefrío (Granada); el cierre solicitado no consta construido.",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0020",
+      "province_code": "19",
+      "distributor_code": "R1-001",
+      "status": "accepted",
+      "decision_reason": "i-DE: norte de la provincia de Guadalajara.",
+      "review_source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+      "checked_on": "2026-10-03",
+      "evidence": {
+        "source_title": "Qué es el CUPS, dónde encontrarlo y por qué te importa | Endesa",
+        "source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+        "published_on": "2022-03-01",
+        "checked_on": "2026-10-03",
+        "geographic_claim": "i-DE: norte de la provincia de Guadalajara.",
+        "confidence": "other_operator_reported"
+      }
+    },
+    {
+      "id": "C0021",
+      "province_code": "19",
+      "distributor_code": "R1-002",
+      "status": "accepted",
+      "decision_reason": "UFD: sur de la provincia de Guadalajara.",
+      "review_source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+      "checked_on": "2026-10-03",
+      "evidence": {
+        "source_title": "Qué es el CUPS, dónde encontrarlo y por qué te importa | Endesa",
+        "source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+        "published_on": "2022-03-01",
+        "checked_on": "2026-10-03",
+        "geographic_claim": "UFD: sur de la provincia de Guadalajara.",
+        "confidence": "other_operator_reported"
+      }
+    },
+    {
+      "id": "C0022",
+      "province_code": "20",
+      "distributor_code": "R1-001",
+      "status": "accepted",
+      "decision_reason": "i-DE: solicitó sustituir dos líneas aéreas existentes en el entorno del puente del Urumea, Hernani (Gipuzkoa); la línea subterránea nueva no consta instalada.",
+      "review_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2023-4385",
+      "checked_on": "2026-10-07",
+      "evidence": {
+        "source_title": "Líneas del Urumea | BOE-B-2023-4385",
+        "source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2023-4385",
+        "published_on": "2023-02-11",
+        "checked_on": "2026-10-07",
+        "geographic_claim": "i-DE: solicitó sustituir dos líneas aéreas existentes en el entorno del puente del Urumea, Hernani (Gipuzkoa); la línea subterránea nueva no consta instalada.",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0023",
+      "province_code": "21",
+      "distributor_code": "R1-299",
+      "status": "accepted",
+      "decision_reason": "e-distribución: subestación El Rocío existente, de su propiedad, en Almonte (Huelva).",
+      "review_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2023-926",
+      "checked_on": "2026-10-05",
+      "evidence": {
+        "source_title": "Subestación El Rocío de e-distribución | BOE-B-2023-926",
+        "source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2023-926",
+        "published_on": "2023-01-12",
+        "checked_on": "2026-10-05",
+        "geographic_claim": "e-distribución: subestación El Rocío existente, de su propiedad, en Almonte (Huelva).",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0024",
+      "province_code": "22",
+      "distributor_code": "R1-299",
+      "status": "accepted",
+      "decision_reason": "e-distribución: informó de líneas de media y alta tensión de sus instalaciones afectadas por el proyecto Pisces en Huesca; el aviso no delimita sus trazados.",
+      "review_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2023-25262",
+      "checked_on": "2026-10-07",
+      "evidence": {
+        "source_title": "Afecciones del parque Pisces | BOE-A-2023-25262",
+        "source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2023-25262",
+        "published_on": "2023-12-12",
+        "checked_on": "2026-10-07",
+        "geographic_claim": "e-distribución: informó de líneas de media y alta tensión de sus instalaciones afectadas por el proyecto Pisces en Huesca; el aviso no delimita sus trazados.",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0025",
+      "province_code": "23",
+      "distributor_code": "R1-299",
+      "status": "accepted",
+      "decision_reason": "e-distribución: canalización y conductor existentes de la línea Agua_Baeza entre Rus y Úbeda (Jaén); la reforma era objeto de solicitud.",
+      "review_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-21546",
+      "checked_on": "2026-10-07",
+      "evidence": {
+        "source_title": "Línea Agua_Baeza | BOE-B-2026-21546",
+        "source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-21546",
+        "published_on": "2026-06-24",
+        "checked_on": "2026-10-07",
+        "geographic_claim": "e-distribución: canalización y conductor existentes de la línea Agua_Baeza entre Rus y Úbeda (Jaén); la reforma era objeto de solicitud.",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0026",
+      "province_code": "24",
+      "distributor_code": "R1-299",
+      "status": "accepted",
+      "decision_reason": "e-distribución: partes de las provincias de Murcia, Albacete, Ciudad Real, Cáceres, A Coruña, Ourense y León.",
+      "review_source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+      "checked_on": "2026-10-03",
+      "evidence": {
+        "source_title": "Qué es el CUPS, dónde encontrarlo y por qué te importa | Endesa",
+        "source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+        "published_on": "2022-03-01",
+        "checked_on": "2026-10-03",
+        "geographic_claim": "e-distribución: partes de las provincias de Murcia, Albacete, Ciudad Real, Cáceres, A Coruña, Ourense y León.",
+        "confidence": "group_first_party_reported"
+      }
+    },
+    {
+      "id": "C0027",
+      "province_code": "24",
+      "distributor_code": "R1-001",
+      "status": "accepted",
+      "decision_reason": "i-DE: Castilla y León, salvo Segovia y el oeste de León; presencia parcial en León.",
+      "review_source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+      "checked_on": "2026-10-03",
+      "evidence": {
+        "source_title": "Qué es el CUPS, dónde encontrarlo y por qué te importa | Endesa",
+        "source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+        "published_on": "2022-03-01",
+        "checked_on": "2026-10-03",
+        "geographic_claim": "i-DE: Castilla y León, salvo Segovia y el oeste de León; presencia parcial en León.",
+        "confidence": "other_operator_reported"
+      }
+    },
+    {
+      "id": "C0028",
+      "province_code": "24",
+      "distributor_code": "R1-002",
+      "status": "accepted",
+      "decision_reason": "UFD: oeste de la provincia de León.",
+      "review_source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+      "checked_on": "2026-10-03",
+      "evidence": {
+        "source_title": "Qué es el CUPS, dónde encontrarlo y por qué te importa | Endesa",
+        "source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+        "published_on": "2022-03-01",
+        "checked_on": "2026-10-03",
+        "geographic_claim": "UFD: oeste de la provincia de León.",
+        "confidence": "other_operator_reported"
+      }
+    },
+    {
+      "id": "C0029",
+      "province_code": "25",
+      "distributor_code": "R1-299",
+      "status": "accepted",
+      "decision_reason": "e-distribución: posiciones y celdas existentes de la subestación Altron en Rialp (Lleida); la ampliación solicitada no se presenta como ejecutada.",
+      "review_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2022-18219",
+      "checked_on": "2026-10-07",
+      "evidence": {
+        "source_title": "Subestación Altron | BOE-B-2022-18219",
+        "source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2022-18219",
+        "published_on": "2022-06-07",
+        "checked_on": "2026-10-07",
+        "geographic_claim": "e-distribución: posiciones y celdas existentes de la subestación Altron en Rialp (Lleida); la ampliación solicitada no se presenta como ejecutada.",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0030",
+      "province_code": "26",
+      "distributor_code": "R1-001",
+      "status": "accepted",
+      "decision_reason": "i-DE: renovación solicitada de la línea Lodosa-Mendavia y sus derivaciones existentes en Alcanadre (La Rioja); la renovación no consta ejecutada.",
+      "review_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2023-20550",
+      "checked_on": "2026-10-07",
+      "evidence": {
+        "source_title": "Línea Lodosa-Mendavia | BOE-B-2023-20550",
+        "source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2023-20550",
+        "published_on": "2023-07-05",
+        "checked_on": "2026-10-07",
+        "geographic_claim": "i-DE: renovación solicitada de la línea Lodosa-Mendavia y sus derivaciones existentes en Alcanadre (La Rioja); la renovación no consta ejecutada.",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0031",
+      "province_code": "27",
+      "distributor_code": "R1-002",
+      "status": "accepted",
+      "decision_reason": "UFD: repotenciación autorizada de línea de distribución existente en Quiroga (Lugo).",
+      "review_source_url": "https://www.xunta.gal/dog/Publicados/2025/20250528/AnuncioG0763-080525-0009_es.html",
+      "checked_on": "2026-10-04",
+      "evidence": {
+        "source_title": "Repotenciación de línea de distribución de UFD en Ourense y Lugo | DOG 101/2025",
+        "source_url": "https://www.xunta.gal/dog/Publicados/2025/20250528/AnuncioG0763-080525-0009_es.html",
+        "published_on": "2025-05-28",
+        "checked_on": "2026-10-04",
+        "geographic_claim": "UFD: repotenciación autorizada de línea de distribución existente en Quiroga (Lugo).",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0032",
+      "province_code": "28",
+      "distributor_code": "R1-001",
+      "status": "accepted",
+      "decision_reason": "i-DE: Comunidad de Madrid, salvo el sur.",
+      "review_source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+      "checked_on": "2026-10-03",
+      "evidence": {
+        "source_title": "Qué es el CUPS, dónde encontrarlo y por qué te importa | Endesa",
+        "source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+        "published_on": "2022-03-01",
+        "checked_on": "2026-10-03",
+        "geographic_claim": "i-DE: Comunidad de Madrid, salvo el sur.",
+        "confidence": "other_operator_reported"
+      }
+    },
+    {
+      "id": "C0033",
+      "province_code": "28",
+      "distributor_code": "R1-002",
+      "status": "accepted",
+      "decision_reason": "UFD: sur de la Comunidad de Madrid.",
+      "review_source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+      "checked_on": "2026-10-03",
+      "evidence": {
+        "source_title": "Qué es el CUPS, dónde encontrarlo y por qué te importa | Endesa",
+        "source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+        "published_on": "2022-03-01",
+        "checked_on": "2026-10-03",
+        "geographic_claim": "UFD: sur de la Comunidad de Madrid.",
+        "confidence": "other_operator_reported"
+      }
+    },
+    {
+      "id": "C0034",
+      "province_code": "29",
+      "distributor_code": "R1-299",
+      "status": "accepted",
+      "decision_reason": "e-distribución: gestora y titular de la red de distribución existente a la que se prevé conectar la actuación Buenavista en Málaga; el convenio no prueba construida la extensión.",
+      "review_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-5332",
+      "checked_on": "2026-10-07",
+      "evidence": {
+        "source_title": "Convenio Buenavista | BOE-A-2025-5332",
+        "source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-5332",
+        "published_on": "2025-03-17",
+        "checked_on": "2026-10-07",
+        "geographic_claim": "e-distribución: gestora y titular de la red de distribución existente a la que se prevé conectar la actuación Buenavista en Málaga; el convenio no prueba construida la extensión.",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0035",
+      "province_code": "30",
+      "distributor_code": "R1-299",
+      "status": "accepted",
+      "decision_reason": "e-distribución: partes de las provincias de Murcia, Albacete, Ciudad Real, Cáceres, A Coruña, Ourense y León.",
+      "review_source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+      "checked_on": "2026-10-03",
+      "evidence": {
+        "source_title": "Qué es el CUPS, dónde encontrarlo y por qué te importa | Endesa",
+        "source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+        "published_on": "2022-03-01",
+        "checked_on": "2026-10-03",
+        "geographic_claim": "e-distribución: partes de las provincias de Murcia, Albacete, Ciudad Real, Cáceres, A Coruña, Ourense y León.",
+        "confidence": "group_first_party_reported"
+      }
+    },
+    {
+      "id": "C0036",
+      "province_code": "30",
+      "distributor_code": "R1-001",
+      "status": "accepted",
+      "decision_reason": "i-DE: Murcia.",
+      "review_source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+      "checked_on": "2026-10-03",
+      "evidence": {
+        "source_title": "Qué es el CUPS, dónde encontrarlo y por qué te importa | Endesa",
+        "source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+        "published_on": "2022-03-01",
+        "checked_on": "2026-10-03",
+        "geographic_claim": "i-DE: Murcia.",
+        "confidence": "other_operator_reported"
+      }
+    },
+    {
+      "id": "C0037",
+      "province_code": "31",
+      "distributor_code": "R1-001",
+      "status": "accepted",
+      "decision_reason": "i-DE: renovación solicitada de la línea Lodosa-Mendavia y sus derivaciones existentes en Lodosa y Mendavia (Navarra); la renovación no consta ejecutada.",
+      "review_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2023-20550",
+      "checked_on": "2026-10-07",
+      "evidence": {
+        "source_title": "Línea Lodosa-Mendavia | BOE-B-2023-20550",
+        "source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2023-20550",
+        "published_on": "2023-07-05",
+        "checked_on": "2026-10-07",
+        "geographic_claim": "i-DE: renovación solicitada de la línea Lodosa-Mendavia y sus derivaciones existentes en Lodosa y Mendavia (Navarra); la renovación no consta ejecutada.",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0038",
+      "province_code": "32",
+      "distributor_code": "R1-299",
+      "status": "accepted",
+      "decision_reason": "e-distribución: partes de las provincias de Murcia, Albacete, Ciudad Real, Cáceres, A Coruña, Ourense y León.",
+      "review_source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+      "checked_on": "2026-10-03",
+      "evidence": {
+        "source_title": "Qué es el CUPS, dónde encontrarlo y por qué te importa | Endesa",
+        "source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+        "published_on": "2022-03-01",
+        "checked_on": "2026-10-03",
+        "geographic_claim": "e-distribución: partes de las provincias de Murcia, Albacete, Ciudad Real, Cáceres, A Coruña, Ourense y León.",
+        "confidence": "group_first_party_reported"
+      }
+    },
+    {
+      "id": "C0039",
+      "province_code": "32",
+      "distributor_code": "R1-002",
+      "status": "accepted",
+      "decision_reason": "UFD: repotenciación autorizada de tramos de línea de distribución existente en A Pobra de Trives, Larouco, Petín y A Rúa (Ourense).",
+      "review_source_url": "https://www.xunta.gal/dog/Publicados/2025/20250528/AnuncioG0763-080525-0009_es.html",
+      "checked_on": "2026-10-04",
+      "evidence": {
+        "source_title": "Repotenciación de línea de distribución de UFD en Ourense y Lugo | DOG 101/2025",
+        "source_url": "https://www.xunta.gal/dog/Publicados/2025/20250528/AnuncioG0763-080525-0009_es.html",
+        "published_on": "2025-05-28",
+        "checked_on": "2026-10-04",
+        "geographic_claim": "UFD: repotenciación autorizada de tramos de línea de distribución existente en A Pobra de Trives, Larouco, Petín y A Rúa (Ourense).",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0040",
+      "province_code": "33",
+      "distributor_code": "R1-008",
+      "status": "accepted",
+      "decision_reason": "Hidrocantábrico: red eléctrica subterránea en el entorno del río San Pedro, Ribadesella (Asturias).",
+      "review_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-2338",
+      "checked_on": "2026-10-03",
+      "evidence": {
+        "source_title": "Red eléctrica de Hidrocantábrico en Ribadesella | BOE-B-2026-2338",
+        "source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-2338",
+        "published_on": "2026-01-29",
+        "checked_on": "2026-10-03",
+        "geographic_claim": "Hidrocantábrico: red eléctrica subterránea en el entorno del río San Pedro, Ribadesella (Asturias).",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0041",
+      "province_code": "33",
+      "distributor_code": "R1-005",
+      "status": "accepted",
+      "decision_reason": "Viesgo Distribución: algunas zonas del sur y oeste de Asturias.",
+      "review_source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+      "checked_on": "2026-10-03",
+      "evidence": {
+        "source_title": "Qué es el CUPS, dónde encontrarlo y por qué te importa | Endesa",
+        "source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+        "published_on": "2022-03-01",
+        "checked_on": "2026-10-03",
+        "geographic_claim": "Viesgo Distribución: algunas zonas del sur y oeste de Asturias.",
+        "confidence": "other_operator_reported"
+      }
+    },
+    {
+      "id": "C0042",
+      "province_code": "34",
+      "distributor_code": "R1-005",
+      "status": "accepted",
+      "decision_reason": "Viesgo Distribución: autorizada la sustitución del centro de seccionamiento existente Reparto Helechar-6048 en Barruelo de Santullán (Palencia).",
+      "review_source_url": "https://bocyl.jcyl.es/boletines/2026/01/07/pdf/BOCYL-D-07012026-3-4.pdf",
+      "checked_on": "2026-10-05",
+      "evidence": {
+        "source_title": "Centro de seccionamiento Reparto Helechar | BOCYL 3/2026",
+        "source_url": "https://bocyl.jcyl.es/boletines/2026/01/07/pdf/BOCYL-D-07012026-3-4.pdf",
+        "published_on": "2026-01-07",
+        "checked_on": "2026-10-05",
+        "geographic_claim": "Viesgo Distribución: autorizada la sustitución del centro de seccionamiento existente Reparto Helechar-6048 en Barruelo de Santullán (Palencia).",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0043",
+      "province_code": "36",
+      "distributor_code": "R1-002",
+      "status": "accepted",
+      "decision_reason": "UFD: repotenciación autorizada del transformador existente de la subestación Mourente, en Pontevedra (Pontevedra).",
+      "review_source_url": "https://www.xunta.gal/dog/Publicados/2023/20230508/AnuncioV0653-170423-0008_es.html",
+      "checked_on": "2026-10-04",
+      "evidence": {
+        "source_title": "Repotenciación de la subestación Mourente de UFD | DOG 87/2023",
+        "source_url": "https://www.xunta.gal/dog/Publicados/2023/20230508/AnuncioV0653-170423-0008_es.html",
+        "published_on": "2023-05-08",
+        "checked_on": "2026-10-04",
+        "geographic_claim": "UFD: repotenciación autorizada del transformador existente de la subestación Mourente, en Pontevedra (Pontevedra).",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0044",
+      "province_code": "37",
+      "distributor_code": "R1-001",
+      "status": "accepted",
+      "decision_reason": "i-DE: tramo existente de la línea subterránea Urbana Sur y centro de transformación existente en Salamanca; el refuerzo autorizado no se presenta como realizado.",
+      "review_source_url": "https://bocyl.jcyl.es/boletines/2024/10/16/pdf/BOCYL-D-16102024-6.pdf",
+      "checked_on": "2026-10-07",
+      "evidence": {
+        "source_title": "Línea Urbana Sur | BOCYL-D-16102024-6",
+        "source_url": "https://bocyl.jcyl.es/boletines/2024/10/16/pdf/BOCYL-D-16102024-6.pdf",
+        "published_on": "2024-10-16",
+        "checked_on": "2026-10-07",
+        "geographic_claim": "i-DE: tramo existente de la línea subterránea Urbana Sur y centro de transformación existente en Salamanca; el refuerzo autorizado no se presenta como realizado.",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0045",
+      "province_code": "38",
+      "distributor_code": "R1-299",
+      "status": "accepted",
+      "decision_reason": "e-distribución: línea de media tensión y líneas de baja tensión existentes de su propiedad en Arico (Santa Cruz de Tenerife); el soterramiento solicitado no consta realizado.",
+      "review_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2025-27901",
+      "checked_on": "2026-10-07",
+      "evidence": {
+        "source_title": "Líneas de Arico | BOE-B-2025-27901",
+        "source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2025-27901",
+        "published_on": "2025-07-30",
+        "checked_on": "2026-10-07",
+        "geographic_claim": "e-distribución: línea de media tensión y líneas de baja tensión existentes de su propiedad en Arico (Santa Cruz de Tenerife); el soterramiento solicitado no consta realizado.",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0046",
+      "province_code": "39",
+      "distributor_code": "R1-005",
+      "status": "accepted",
+      "decision_reason": "Viesgo Distribución: Cantabria.",
+      "review_source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+      "checked_on": "2026-10-03",
+      "evidence": {
+        "source_title": "Qué es el CUPS, dónde encontrarlo y por qué te importa | Endesa",
+        "source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+        "published_on": "2022-03-01",
+        "checked_on": "2026-10-03",
+        "geographic_claim": "Viesgo Distribución: Cantabria.",
+        "confidence": "other_operator_reported"
+      }
+    },
+    {
+      "id": "C0047",
+      "province_code": "40",
+      "distributor_code": "R1-002",
+      "status": "accepted",
+      "decision_reason": "UFD: provincia de Segovia.",
+      "review_source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+      "checked_on": "2026-10-03",
+      "evidence": {
+        "source_title": "Qué es el CUPS, dónde encontrarlo y por qué te importa | Endesa",
+        "source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+        "published_on": "2022-03-01",
+        "checked_on": "2026-10-03",
+        "geographic_claim": "UFD: provincia de Segovia.",
+        "confidence": "other_operator_reported"
+      }
+    },
+    {
+      "id": "C0048",
+      "province_code": "41",
+      "distributor_code": "R1-299",
+      "status": "accepted",
+      "decision_reason": "e-distribución: solicitud de cambio de conductor en la línea existente Agribética-Cantillana, en Brenes, Cantillana y La Rinconada (Sevilla).",
+      "review_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2024-39884",
+      "checked_on": "2026-10-05",
+      "evidence": {
+        "source_title": "Cambio de conductor Agribética-Cantillana | BOE-B-2024-39884",
+        "source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2024-39884",
+        "published_on": "2024-11-04",
+        "checked_on": "2026-10-05",
+        "geographic_claim": "e-distribución: solicitud de cambio de conductor en la línea existente Agribética-Cantillana, en Brenes, Cantillana y La Rinconada (Sevilla).",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0049",
+      "province_code": "42",
+      "distributor_code": "R1-299",
+      "status": "accepted",
+      "decision_reason": "e-distribución: la mitad oriental de la provincia de Soria.",
+      "review_source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+      "checked_on": "2026-10-03",
+      "evidence": {
+        "source_title": "Qué es el CUPS, dónde encontrarlo y por qué te importa | Endesa",
+        "source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+        "published_on": "2022-03-01",
+        "checked_on": "2026-10-03",
+        "geographic_claim": "e-distribución: la mitad oriental de la provincia de Soria.",
+        "confidence": "group_first_party_reported"
+      }
+    },
+    {
+      "id": "C0050",
+      "province_code": "43",
+      "distributor_code": "R1-299",
+      "status": "accepted",
+      "decision_reason": "e-distribución: solicitud de reforma de apoyos y conductor de la línea de distribución existente TEIXETA2 en l'Argentera y Riudecanyes (Tarragona).",
+      "review_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-21758",
+      "checked_on": "2026-10-05",
+      "evidence": {
+        "source_title": "Reforma de la línea TEIXETA2 | BOE-B-2026-21758",
+        "source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-21758",
+        "published_on": "2026-06-26",
+        "checked_on": "2026-10-05",
+        "geographic_claim": "e-distribución: solicitud de reforma de apoyos y conductor de la línea de distribución existente TEIXETA2 en l'Argentera y Riudecanyes (Tarragona).",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0051",
+      "province_code": "44",
+      "distributor_code": "R1-299",
+      "status": "accepted",
+      "decision_reason": "e-distribución: subestación y centro de seccionamiento Los Arcos de su propiedad, con infraestructura de evacuación existente, en Andorra (Teruel).",
+      "review_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-14564",
+      "checked_on": "2026-10-07",
+      "evidence": {
+        "source_title": "Subestación Los Arcos | BOE-B-2026-14564",
+        "source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-14564",
+        "published_on": "2026-05-08",
+        "checked_on": "2026-10-07",
+        "geographic_claim": "e-distribución: subestación y centro de seccionamiento Los Arcos de su propiedad, con infraestructura de evacuación existente, en Andorra (Teruel).",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0052",
+      "province_code": "45",
+      "distributor_code": "R1-001",
+      "status": "accepted",
+      "decision_reason": "i-DE: oeste de la provincia de Toledo.",
+      "review_source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+      "checked_on": "2026-10-03",
+      "evidence": {
+        "source_title": "Qué es el CUPS, dónde encontrarlo y por qué te importa | Endesa",
+        "source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+        "published_on": "2022-03-01",
+        "checked_on": "2026-10-03",
+        "geographic_claim": "i-DE: oeste de la provincia de Toledo.",
+        "confidence": "other_operator_reported"
+      }
+    },
+    {
+      "id": "C0053",
+      "province_code": "45",
+      "distributor_code": "R1-002",
+      "status": "accepted",
+      "decision_reason": "UFD: la mayor parte de la provincia de Toledo.",
+      "review_source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+      "checked_on": "2026-10-03",
+      "evidence": {
+        "source_title": "Qué es el CUPS, dónde encontrarlo y por qué te importa | Endesa",
+        "source_url": "https://www.endesa.com/es/blog/blog-de-endesa/luz/cups-donde-encontrar",
+        "published_on": "2022-03-01",
+        "checked_on": "2026-10-03",
+        "geographic_claim": "UFD: la mayor parte de la provincia de Toledo.",
+        "confidence": "other_operator_reported"
+      }
+    },
+    {
+      "id": "C0054",
+      "province_code": "46",
+      "distributor_code": "R1-001",
+      "status": "accepted",
+      "decision_reason": "i-DE: red de distribución reparada tras la DANA en zonas de l'Horta Sud, Catadau-Carlet y Requena-Utiel-Buñol (Valencia).",
+      "review_source_url": "https://www.iberdrola.com/sala-comunicacion/noticias/detalle/iberdrola-invierte-100-millones-de-euros-en-el-rediseno-de-la-red-electrica-afectada-por-la-dana",
+      "checked_on": "2026-10-04",
+      "evidence": {
+        "source_title": "Iberdrola España invierte 100 millones en su red afectada en Valencia",
+        "source_url": "https://www.iberdrola.com/sala-comunicacion/noticias/detalle/iberdrola-invierte-100-millones-de-euros-en-el-rediseno-de-la-red-electrica-afectada-por-la-dana",
+        "published_on": "2025-01-16",
+        "checked_on": "2026-10-04",
+        "geographic_claim": "i-DE: red de distribución reparada tras la DANA en zonas de l'Horta Sud, Catadau-Carlet y Requena-Utiel-Buñol (Valencia).",
+        "confidence": "group_first_party_reported"
+      }
+    },
+    {
+      "id": "C0055",
+      "province_code": "48",
+      "distributor_code": "R1-001",
+      "status": "accepted",
+      "decision_reason": "i-DE: subestación Abanto de 132 kV existente y de su propiedad en Abanto-Zierbena (Bizkaia); el parque eólico ajeno era un anteproyecto.",
+      "review_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2021-33841",
+      "checked_on": "2026-10-07",
+      "evidence": {
+        "source_title": "Subestación Abanto | BOE-B-2021-33841",
+        "source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2021-33841",
+        "published_on": "2021-07-23",
+        "checked_on": "2026-10-07",
+        "geographic_claim": "i-DE: subestación Abanto de 132 kV existente y de su propiedad en Abanto-Zierbena (Bizkaia); el parque eólico ajeno era un anteproyecto.",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0056",
+      "province_code": "49",
+      "distributor_code": "R1-001",
+      "status": "accepted",
+      "decision_reason": "i-DE: línea aérea Formariz existente, cuya renovación promovió en Villar del Buey y Fariza (Zamora); el nuevo tendido no consta construido.",
+      "review_source_url": "https://bocyl.jcyl.es/boletines/2023/04/14/pdf/BOCYL-D-14042023-13.pdf",
+      "checked_on": "2026-10-07",
+      "evidence": {
+        "source_title": "Línea Formariz | BOCYL-D-14042023-13",
+        "source_url": "https://bocyl.jcyl.es/boletines/2023/04/14/pdf/BOCYL-D-14042023-13.pdf",
+        "published_on": "2023-04-14",
+        "checked_on": "2026-10-07",
+        "geographic_claim": "i-DE: línea aérea Formariz existente, cuya renovación promovió en Villar del Buey y Fariza (Zamora); el nuevo tendido no consta construido.",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0057",
+      "province_code": "50",
+      "distributor_code": "R1-299",
+      "status": "accepted",
+      "decision_reason": "e-distribución: subestación Pitarco de su propiedad conectada a la red de distribución en la provincia de Zaragoza; el parque eólico era una solicitud.",
+      "review_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2025-23023",
+      "checked_on": "2026-10-07",
+      "evidence": {
+        "source_title": "Subestación Pitarco | BOE-B-2025-23023",
+        "source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2025-23023",
+        "published_on": "2025-06-19",
+        "checked_on": "2026-10-07",
+        "geographic_claim": "e-distribución: subestación Pitarco de su propiedad conectada a la red de distribución en la provincia de Zaragoza; el parque eólico era una solicitud.",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0058",
+      "province_code": "51",
+      "distributor_code": "R1-030",
+      "status": "accepted",
+      "decision_reason": "Empresa de Alumbrado Eléctrico de Ceuta Distribución: explotación de activos adscritos a la red de distribución en la zona de servicio del puerto de Ceuta.",
+      "review_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2021-51380",
+      "checked_on": "2026-10-07",
+      "evidence": {
+        "source_title": "Red de distribución del puerto de Ceuta | BOE-B-2021-51380",
+        "source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2021-51380",
+        "published_on": "2021-12-20",
+        "checked_on": "2026-10-07",
+        "geographic_claim": "Empresa de Alumbrado Eléctrico de Ceuta Distribución: explotación de activos adscritos a la red de distribución en la zona de servicio del puerto de Ceuta.",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0059",
+      "province_code": "52",
+      "distributor_code": "R1-027",
+      "status": "accepted",
+      "decision_reason": "Compañía Melillense de Gas y Electricidad: centro de transformación Ampliación General Villalba en Melilla, con puesta en marcha parcial aprobada en 2002; la ampliación de 2026 fue autorizada, no acreditada como ejecutada.",
+      "review_source_url": "https://bomemelilla.es/bome/BOME-B-2026-6370/articulo/397",
+      "checked_on": "2026-10-07",
+      "evidence": {
+        "source_title": "Centro Ampliación General Villalba | BOME-A-2026-397",
+        "source_url": "https://bomemelilla.es/bome/BOME-B-2026-6370/articulo/397",
+        "published_on": "2026-04-14",
+        "checked_on": "2026-10-07",
+        "geographic_claim": "Compañía Melillense de Gas y Electricidad: centro de transformación Ampliación General Villalba en Melilla, con puesta en marcha parcial aprobada en 2002; la ampliación de 2026 fue autorizada, no acreditada como ejecutada.",
+        "confidence": "official_document"
+      }
+    },
+    {
+      "id": "C0060",
+      "province_code": "09",
+      "distributor_code": "R1-001",
+      "status": "rejected",
+      "decision_reason": "Describe dos centros y un enlace nuevos; no atribuye inequívocamente a i-DE una instalación existente en Valle de Mena.",
+      "review_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2023-24251",
+      "checked_on": "2026-10-07",
+      "evidence": null
+    },
+    {
+      "id": "C0061",
+      "province_code": "12",
+      "distributor_code": "R1-001",
+      "status": "rejected",
+      "decision_reason": "Menciona líneas propias existentes o en proyecto sin identificar una instalación existente en Castellón.",
+      "review_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2023-25626",
+      "checked_on": "2026-10-07",
+      "evidence": null
+    },
+    {
+      "id": "C0062",
+      "province_code": "35",
+      "distributor_code": "R1-299",
+      "status": "rejected",
+      "decision_reason": "La planta ajena y el centro y línea que se cederían en el futuro no prueban un activo existente suyo en Telde.",
+      "review_source_url": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2024-26505",
+      "checked_on": "2026-10-07",
+      "evidence": null
+    },
+    {
+      "id": "C0063",
+      "province_code": "47",
+      "distributor_code": "R1-001",
+      "status": "rejected",
+      "decision_reason": "La línea existente no se atribuye expresamente a i-DE y no consta en servicio la obra nueva autorizada.",
+      "review_source_url": "https://bocyl.jcyl.es/boletines/2025/08/04/pdf/BOCYL-D-04082025-14.pdf",
+      "checked_on": "2026-10-07",
+      "evidence": null
+    }
+  ]
+}

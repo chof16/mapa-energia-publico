@@ -1,0 +1,27 @@
+.province-evidence { position: absolute; z-index: 3; top: 20px; left: 20px; width: min(510px, calc(100% - 130px)); max-height: min(58dvh, 520px); overflow-y: auto; overscroll-behavior: contain; padding: 16px; border: 1px solid var(--control-line); border-radius: 12px; background: var(--paper); box-shadow: var(--shadow); color: var(--ink); font-size: 12px; line-height: 1.5; }
+.province-evidence-heading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; }
+.province-evidence-kicker { color: var(--green); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+.province-evidence h2 { margin: 2px 0 0; font-size: 17px; line-height: 1.35; }
+.province-evidence-scope, .province-evidence-note { color: var(--muted); }
+.province-evidence p { margin: 8px 0 0; }
+.province-evidence-warning { padding: 8px 10px; border-left: 3px solid var(--green); background: var(--surface); font-weight: 600; }
+.province-evidence-list { display: grid; gap: 10px; margin: 12px 0; padding: 0; list-style: none; }
+.province-evidence-list li { padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.province-evidence-list h3 { margin: 0; font-size: 13px; line-height: 1.4; overflow-wrap: anywhere; }
+.province-evidence-list h3 span { color: var(--muted); white-space: nowrap; }
+.province-evidence-list p { margin-top: 5px; overflow-wrap: anywhere; }
+.province-evidence-claim { font-weight: 600; }
+.province-evidence-attribution { color: var(--muted); font-size: 11px; }
+.province-evidence a { color: var(--green); text-decoration: underline; text-underline-offset: 2px; overflow-wrap: anywhere; }
+.province-evidence a:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+.province-evidence:focus-visible { outline: 2px solid var(--green); outline-offset: -3px; }
+.province-evidence-error .retry-button { margin-top: 10px; }
+.province-prompt { display: grid; gap: 4px; width: min(400px, calc(100% - 130px)); }
+@media (max-width: 700px) {
+  .province-evidence { top: 12px; left: 12px; width: calc(100% - 88px); max-height: min(45dvh, 360px); padding: 12px; }
+  .province-prompt { width: calc(100% - 88px); }
+  .province-evidence h2 { font-size: 15px; }
+}
+@media (max-height: 600px) {
+  .province-evidence { max-height: 42dvh; }
+}

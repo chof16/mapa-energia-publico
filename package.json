@@ -1,0 +1,6 @@
+{
+  "name": "mapa-energia-publico",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "packageManager": "pnpm@12.8.1"
+}

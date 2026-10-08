@@ -1,0 +1,16 @@
+[project]
+name = "electricity-map-ingestion"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = ["electricity-map-domain"]
+
+[project.scripts]
+ingest-cnmc-market = "electricity_map_ingestion.cnmc_market:main"
+refresh-cnmc-market = "electricity_map_ingestion.refresh_cnmc_market:main"
+
+[tool.uv.sources]
+electricity-map-domain = { workspace = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

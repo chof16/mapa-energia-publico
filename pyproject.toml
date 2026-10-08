@@ -1,0 +1,36 @@
+[project]
+name = "electricity-map"
+version = "0.1.0"
+requires-python = ">=3.12"
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.0",
+    "pytest>=8.3.0",
+    "ruff>=0.11.0",
+]
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = [
+    "apps/api",
+    "packages/domain",
+    "packages/ingestion",
+    "packages/map_pipeline",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["B", "E", "F", "I", "RUF", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+"packages/map_pipeline/src/electricity_map_pipeline/build_map.py" = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["apps/api/tests", "packages"]
+pythonpath = ["."]
