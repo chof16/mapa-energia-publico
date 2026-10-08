@@ -119,6 +119,11 @@ preserve its source-specific reuse terms.
 
 ## Validation
 
+`.github/workflows/ci.yml` runs `Python checks` (Ruff and pytest) and
+`Web checks` (Vitest and the type-checked build) for pull requests and pushes
+to `main`. Keep these job names stable: branch protection requires them.
+CI uses synthetic data and does not need production secrets or downloaded maps.
+
 Run from the repository root after installing dependencies:
 
 ```sh

@@ -106,6 +106,10 @@ sintéticos y no requieren cuentas de proveedores ni descargas reales.
 
 ## Comprobaciones
 
+GitHub Actions ejecuta los tests de Python y de la web, Ruff y el build con
+comprobación de tipos en cada pull request hacia `main` y cada push a esa rama.
+Para ejecutar las mismas comprobaciones localmente:
+
 ```sh
 uv run --all-packages pytest
 uv run ruff check .
@@ -152,6 +156,8 @@ La referencia verificada previa a la publicación abarca 2011T1–2025T4 y
 48/52 provincias con evidencia positiva. Los refrescos programados siguen
 pendientes; arrancar la API no descarga ni actualiza datos automáticamente.
 
-Para contribuir, consultar [AGENTS.md](AGENTS.md). Documentar fuentes y
-limitaciones, acompañar cambios de comportamiento con las pruebas pertinentes
-y no incorporar datos privados ni secretos.
+Para contribuir, seguir [CONTRIBUTING.md](CONTRIBUTING.md): crear un fork,
+trabajar en una rama y abrir una pull request hacia `main`. Las convenciones
+del proyecto están en [AGENTS.md](AGENTS.md). Documentar fuentes y limitaciones,
+acompañar cambios de comportamiento con las pruebas pertinentes y no incorporar
+datos privados ni secretos.
