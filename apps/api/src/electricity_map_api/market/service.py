@@ -1,10 +1,18 @@
 """Bounded ORM queries over imported market data, independent of HTTP routing."""
 
-from sqlalchemy import and_, case, func, select
-from sqlalchemy.orm import Session, aliased
+from sqlalchemy import case, func, select
+from sqlalchemy.orm import Session
 
 from electricity_map_api.market.exceptions import QuarterNotLoaded
-from electricity_map_api.market.models import MarketLoad, MarketRow
+from electricity_map_api.market.models import (
+    MarketCompany,
+    MarketCompanyName,
+    MarketFact,
+    MarketImport,
+    MarketLoad,
+    MarketPeriod,
+    MarketSector,
+)
 from electricity_map_api.market.schemas import (
     CommunityShare,
     CommunitySharesResponse,
@@ -34,7 +42,45 @@ def _load(session: Session, query: QuarterQuery) -> MarketLoad:
 
 
 def _category_total(category: str):
-    return func.coalesce(func.sum(case((MarketRow.category == category, MarketRow.supplies), else_=0)), 0)
+    return func.coalesce(func.sum(case((MarketFact.category == category, MarketFact.supplies), else_=0)), 0)
+
+
+def _sector_id(sector: str):
+    return select(MarketSector.id).where(MarketSector.code == sector).scalar_subquery()
+
+
+def _load_id(query: QuarterQuery):
+    period = select(MarketPeriod.id).where(
+        MarketPeriod.year == int(query.period[:4]), MarketPeriod.quarter == int(query.period[-1])
+    )
+    return (
+        select(MarketImport.id)
+        .where(MarketImport.sector_id == _sector_id(query.sector), MarketImport.period_id == period.scalar_subquery())
+        .scalar_subquery()
+    )
+
+
+def _marketer_names(sector: str, marketer_code: str):
+    return (
+        select(MarketCompanyName.id)
+        .join(MarketCompany, MarketCompany.id == MarketCompanyName.company_id)
+        .where(
+            MarketCompany.sector_id == _sector_id(sector),
+            MarketCompany.role == "marketer",
+            MarketCompany.code == marketer_code,
+        )
+    )
+
+
+def _marketer_supplies(sector: str, marketer_code: str):
+    return func.coalesce(
+        func.sum(
+            case(
+                (MarketFact.marketer_name_id.in_(_marketer_names(sector, marketer_code)), MarketFact.supplies), else_=0
+            )
+        ),
+        0,
+    ).label("supplies")
 
 
 def _category_columns():
@@ -54,16 +100,27 @@ def quarters(session: Session, query: SectorQuery) -> QuartersResponse:
 
 def shares(session: Session, query: SharesQuery) -> SharesResponse:
     load = _load(session, query)
-    conditions = [MarketRow.sector == query.sector, MarketRow.period == query.period]
+    conditions = [MarketFact.load_id == _load_id(query)]
     if query.community_code is not None:
-        conditions.append(MarketRow.community_code == query.community_code)
+        conditions.append(MarketFact.community_code == query.community_code)
     totals = session.execute(select(*_category_columns()).where(*conditions)).mappings().one()
-    supplies = func.sum(MarketRow.supplies).label("supplies")
+    # Join names only after reducing facts to one row per observed name.
+    grouped = (
+        select(MarketFact.marketer_name_id, func.sum(MarketFact.supplies).label("supplies"))
+        .where(*conditions, MarketFact.category == "marketer")
+        .group_by(MarketFact.marketer_name_id)
+        .subquery()
+    )
+    supplies = func.sum(grouped.c.supplies).label("supplies")
     rows = session.execute(
-        select(MarketRow.marketer_code, func.max(MarketRow.marketer_name).label("observed_name"), supplies)
-        .where(*conditions, MarketRow.category == "marketer")
-        .group_by(MarketRow.marketer_code)
-        .order_by(supplies.desc(), MarketRow.marketer_code)
+        select(
+            MarketCompany.code.label("marketer_code"), func.max(MarketCompanyName.name).label("observed_name"), supplies
+        )
+        .select_from(grouped)
+        .join(MarketCompanyName, MarketCompanyName.id == grouped.c.marketer_name_id)
+        .join(MarketCompany, MarketCompany.id == MarketCompanyName.company_id)
+        .group_by(MarketCompany.code)
+        .order_by(supplies.desc(), MarketCompany.code)
         .limit(query.limit)
         .offset(query.offset)
     ).mappings()
@@ -84,15 +141,21 @@ def shares(session: Session, query: SharesQuery) -> SharesResponse:
 
 
 def series(session: Session, marketer_code: str, query: SeriesQuery) -> SeriesResponse:
-    conditions = [MarketRow.sector == query.sector, MarketRow.marketer_code == marketer_code]
+    conditions = [
+        MarketImport.sector_id == _sector_id(query.sector),
+        MarketFact.marketer_name_id.in_(_marketer_names(query.sector, marketer_code)),
+    ]
     if query.community_code is not None:
-        conditions.append(MarketRow.community_code == query.community_code)
+        conditions.append(MarketFact.community_code == query.community_code)
+    period = func.printf("%04dT%d", MarketPeriod.year, MarketPeriod.quarter)
     rows = session.execute(
-        select(MarketRow.period, func.sum(MarketRow.supplies).label("supplies"), MarketLoad.metadata_modified)
-        .join(MarketLoad, and_(MarketLoad.sector == MarketRow.sector, MarketLoad.period == MarketRow.period))
+        select(period.label("period"), func.sum(MarketFact.supplies).label("supplies"), MarketImport.metadata_modified)
+        .select_from(MarketFact)
+        .join(MarketImport, MarketImport.id == MarketFact.load_id)
+        .join(MarketPeriod, MarketPeriod.id == MarketImport.period_id)
         .where(*conditions)
-        .group_by(MarketRow.period, MarketLoad.metadata_modified)
-        .order_by(MarketRow.period)
+        .group_by(MarketImport.id, MarketPeriod.year, MarketPeriod.quarter, MarketImport.metadata_modified)
+        .order_by(MarketPeriod.year, MarketPeriod.quarter)
         .limit(120)
     ).mappings()
     points = [SuppliesPoint.model_validate(row) for row in rows]
@@ -119,27 +182,32 @@ def share_series(session: Session, marketer_code: str, query: ShareSeriesQuery) 
         selected = selected.where(MarketLoad.period >= query.start_period)
     if query.end_period is not None:
         selected = selected.where(MarketLoad.period <= query.end_period)
-    # Limit loads before joining facts, so no request aggregates more than 120 quarters.
-    selected = selected.order_by(MarketLoad.period).limit(query.limit).offset(query.offset).subquery()
-    load = aliased(MarketLoad, selected)
-    join_conditions = [MarketRow.sector == load.sector, MarketRow.period == load.period]
-    if query.community_code is not None:
-        join_conditions.append(MarketRow.community_code == query.community_code)
-    supplies = func.sum(
-        case(
-            (and_(MarketRow.category == "marketer", MarketRow.marketer_code == marketer_code), MarketRow.supplies),
-            else_=0,
+    # Bound metadata first; never outer-join the denormalized fact view, which
+    # SQLite materializes by scanning and joining every row in the database.
+    loads = session.scalars(selected.order_by(MarketLoad.period).limit(query.limit).offset(query.offset)).all()
+    totals = {}
+    if loads:
+        period = func.printf("%04dT%d", MarketPeriod.year, MarketPeriod.quarter)
+        load_ids = dict(
+            session.execute(
+                select(period, MarketImport.id)
+                .join(MarketPeriod, MarketPeriod.id == MarketImport.period_id)
+                .where(MarketImport.sector_id == _sector_id(query.sector), period.in_([load.period for load in loads]))
+            ).all()
         )
-    ).label("supplies")
-    rows = session.execute(
-        select(load, supplies, *_category_columns())
-        .outerjoin(MarketRow, and_(*join_conditions))
-        .group_by(*selected.c)
-        .order_by(load.period)
-    )
+        conditions = [MarketFact.load_id.in_(list(load_ids.values()))]
+        if query.community_code is not None:
+            conditions.append(MarketFact.community_code == query.community_code)
+        rows = session.execute(
+            select(MarketFact.load_id, _marketer_supplies(query.sector, marketer_code), *_category_columns())
+            .where(*conditions)
+            .group_by(MarketFact.load_id)
+        )
+        by_id = {row[0]: row[1:] for row in rows}
+        totals = {period: by_id.get(load_id, (0, 0, 0, 0)) for period, load_id in load_ids.items()}
     points = []
-    for row in rows:
-        loaded, count, marketer_total, direct_total, unavailable_total = row
+    for loaded in loads:
+        count, marketer_total, direct_total, unavailable_total = totals[loaded.period]
         points.append(
             ShareSeriesPoint(
                 **RevisionMetadata.model_validate(loaded).model_dump(),
@@ -168,13 +236,13 @@ def community_shares(session: Session, marketer_code: str, query: QuarterQuery) 
     load = _load(session, query)
     rows = session.execute(
         select(
-            MarketRow.community_code,
-            func.sum(case((MarketRow.marketer_code == marketer_code, MarketRow.supplies), else_=0)).label("supplies"),
+            MarketFact.community_code,
+            _marketer_supplies(query.sector, marketer_code),
             *_category_columns(),
         )
-        .where(MarketRow.sector == query.sector, MarketRow.period == query.period)
-        .group_by(MarketRow.community_code)
-        .order_by(MarketRow.community_code)
+        .where(MarketFact.load_id == _load_id(query))
+        .group_by(MarketFact.community_code)
+        .order_by(MarketFact.community_code)
     ).mappings()
     return CommunitySharesResponse(
         **RevisionMetadata.model_validate(load).model_dump(),

@@ -86,6 +86,20 @@ Use mapped SQLAlchemy models and `select()` expressions for API service queries,
 including distribution. Do not use `text()` for those reads. Database setup and
 ingestion retain their schema SQL and SQLite-specific transactional operations.
 
+Aggregate normalized `market_rows` through load IDs and observed-name IDs so the
+existing indexes apply. Do not outer-join `market_rows_view` for time series:
+SQLite materializes the entire joined view. Preserve source-row multiplicity,
+observed names and zero-versus-missing semantics when optimizing queries.
+
+Optional Redis response caching uses server-only `MAPA_REDIS_URL` and
+`MAPA_CACHE_TTL_SECONDS` (default 300). Cache keys include database identity,
+operation and validated path/query parameters. Store complete response DTOs with
+their revision metadata; never cache errors. Hits must avoid opening a database
+connection and still enforce rate limits. Redis failures bypass the cache for
+30 seconds. Concurrent misses are coalesced within one API process. Redis caching
+does not make the in-memory rate limiter distributed. Local development without
+a Redis URL always reads the database directly.
+
 Public documentation explains local execution. The owner's account,
 infrastructure and deployment configuration stays in `.local/`, ignored by
 Git. Do not add it to the README, public examples or workflows. `VITE_*` values
@@ -123,6 +137,8 @@ preserve its source-specific reuse terms.
 `Web checks` (Vitest and the type-checked build) for pull requests and pushes
 to `main`. Keep these job names stable: branch protection requires them.
 CI uses synthetic data and does not need production secrets or downloaded maps.
+Python CI starts an isolated Redis service and sets `TEST_REDIS_URL` for the
+cross-instance cache integration test. Without that variable, only that test skips.
 Python CI uses an available uv-managed Python 3.14 build; the local Arch patch
 in `.python-version` may not be available as a managed download.
 

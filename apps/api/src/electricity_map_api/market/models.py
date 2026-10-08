@@ -1,9 +1,61 @@
-"""Read models over relational projections; views do not duplicate stored data."""
+"""Read models for source projections and indexed normalized market facts."""
 
 from sqlalchemy import Integer, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from electricity_map_api.models import Base
+
+
+class MarketSector(Base):
+    __tablename__ = "sectors"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    code: Mapped[str] = mapped_column(Text)
+
+
+class MarketPeriod(Base):
+    __tablename__ = "periods"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    year: Mapped[int] = mapped_column(Integer)
+    quarter: Mapped[int] = mapped_column(Integer)
+
+
+class MarketImport(Base):
+    __tablename__ = "loads"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    sector_id: Mapped[int] = mapped_column(Integer)
+    period_id: Mapped[int] = mapped_column(Integer)
+    metadata_modified: Mapped[str] = mapped_column(Text)
+
+
+class MarketCompany(Base):
+    __tablename__ = "companies"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    sector_id: Mapped[int] = mapped_column(Integer)
+    role: Mapped[str] = mapped_column(Text)
+    code: Mapped[str] = mapped_column(Text)
+
+
+class MarketCompanyName(Base):
+    __tablename__ = "company_names"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    company_id: Mapped[int] = mapped_column(Integer)
+    name: Mapped[str | None] = mapped_column(Text)
+
+
+class MarketFact(Base):
+    __tablename__ = "market_rows"
+
+    load_id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    source_row_id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    marketer_name_id: Mapped[int | None] = mapped_column(Integer)
+    category: Mapped[str] = mapped_column(Text)
+    community_code: Mapped[str] = mapped_column(Text)
+    supplies: Mapped[int] = mapped_column(Integer)
 
 
 class MarketLoad(Base):

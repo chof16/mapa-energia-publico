@@ -39,6 +39,29 @@ def _turso_database() -> tuple[str | None, str | None]:
     return url, token
 
 
+def _redis_url() -> str | None:
+    value = os.getenv("MAPA_REDIS_URL") or None
+    if value:
+        try:
+            parsed = urlsplit(value)
+            valid = (
+                parsed.scheme in {"redis", "rediss"}
+                and parsed.hostname
+                and (parsed.port is None or parsed.port > 0)
+                and (
+                    parsed.path in {"", "/"}
+                    or (parsed.path.removeprefix("/").isascii() and parsed.path.removeprefix("/").isdigit())
+                )
+                and not parsed.query
+                and not parsed.fragment
+            )
+        except ValueError:
+            valid = False
+        if not valid:
+            raise ValueError("MAPA_REDIS_URL must be a redis:// or rediss:// URL with an optional database number")
+    return value
+
+
 @dataclass(frozen=True, slots=True)
 class Settings:
     """Security and rate-limit settings for one API instance."""
@@ -50,6 +73,8 @@ class Settings:
     turso_url: str | None = None
     turso_auth_token: str | None = field(default=None, repr=False)
     cors_origins: tuple[str, ...] = ()
+    redis_url: str | None = field(default=None, repr=False)
+    cache_ttl_seconds: int = 300
 
     @classmethod
     def from_environment(cls) -> Settings:
@@ -85,4 +110,6 @@ class Settings:
             turso_url=turso_url,
             turso_auth_token=turso_auth_token,
             cors_origins=cors_origins,
+            redis_url=_redis_url(),
+            cache_ttl_seconds=_positive_integer("MAPA_CACHE_TTL_SECONDS", 300),
         )

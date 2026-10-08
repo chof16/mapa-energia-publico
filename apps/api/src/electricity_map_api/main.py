@@ -10,6 +10,7 @@ from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 
+from electricity_map_api.cache import create_response_cache
 from electricity_map_api.config import Settings
 from electricity_map_api.database import create_database_engine, create_turso_engine
 from electricity_map_api.distribution.router import router as distribution_router
@@ -27,6 +28,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         if app_settings.development_mode
         else create_turso_engine(app_settings.turso_url, app_settings.turso_auth_token)
     )
+    cache_source = (
+        str(app_settings.database.resolve())
+        if app_settings.development_mode and app_settings.database
+        else app_settings.turso_url or "unconfigured"
+    )
+    response_cache = create_response_cache(app_settings.redis_url, cache_source, app_settings.cache_ttl_seconds)
 
     @asynccontextmanager
     async def lifespan(application: FastAPI) -> AsyncGenerator[None, None]:
@@ -35,6 +42,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         finally:
             if engine is not None:
                 engine.dispose()
+            if response_cache is not None:
+                response_cache.close()
 
     application = FastAPI(
         title="Electricity Map API",
@@ -46,6 +55,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     application.state.rate_limiter = InMemoryRateLimiter(app_settings.window_seconds)
 
     application.state.database_engine = engine
+    application.state.response_cache = response_cache
     if app_settings.cors_origins:
         application.add_middleware(
             CORSMiddleware,

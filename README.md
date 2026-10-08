@@ -104,6 +104,44 @@ Abrir `http://127.0.0.1:5174`. Sin base configurada las rutas de datos responden
 503; `/healthz` solo indica que el proceso está vivo. Los tests usan datos
 sintéticos y no requieren cuentas de proveedores ni descargas reales.
 
+### Caché local opcional con Redis
+
+La API puede compartir las respuestas de mercado y distribución mediante Redis.
+Sin `MAPA_REDIS_URL`, consulta SQLite directamente. Para probar la caché con Docker:
+
+```sh
+docker run --rm --name mapa-redis -p 127.0.0.1:6379:6379 redis:7-alpine redis-server --save "" --appendonly no --maxmemory 64mb --maxmemory-policy allkeys-lru
+```
+
+Configurar en el `.env` local y reiniciar la API:
+
+```dotenv
+MAPA_REDIS_URL=redis://127.0.0.1:6379/0
+MAPA_CACHE_TTL_SECONDS=300
+```
+
+La caché distingue base de datos, endpoint, comercializadora y todos los filtros.
+Cada respuesta conserva juntos datos y metadatos y caduca después de cinco minutos
+por defecto; una revisión puede tardar ese intervalo en aparecer. No se guardan
+errores. La cabecera `X-Cache` indica `HIT`, `MISS` o `BYPASS`. Un `HIT` evita abrir
+una conexión a la base. Si Redis falla, la API consulta la base con el límite de
+solicitudes habitual y deja de intentar Redis durante 30 segundos.
+
+La URL de Redis puede contener una contraseña: mantenerla en `.env`, nunca en
+variables `VITE_*`. Redis no cambia el límite por IP, que sigue requiriendo una
+única instancia y proceso. Las consultas existentes de la web no reintentan
+automáticamente; el valor global para consultas que no lo especifiquen es de
+dos reintentos adicionales al intento inicial.
+
+Con Redis local activo, ejecutar su prueba de integración:
+
+```sh
+TEST_REDIS_URL=redis://127.0.0.1:6379/0 uv run --all-packages pytest apps/api/tests/test_cache.py
+```
+
+CI levanta su propio Redis temporal para esta prueba; no usa servicios ni secretos
+externos. Sin `TEST_REDIS_URL`, solo se omite la prueba que requiere un servidor real.
+
 ## Comprobaciones
 
 GitHub Actions ejecuta los tests de Python y de la web, Ruff y el build con

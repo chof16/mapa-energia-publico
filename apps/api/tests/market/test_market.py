@@ -15,7 +15,7 @@ from electricity_map_api.market.models import MarketLoad, MarketRow
 from electricity_map_ingestion.cnmc_market import ATTRIBUTION, CONDITIONS_URL
 from electricity_map_ingestion.market_store import initialize, write_quarter
 from fastapi.testclient import TestClient
-from sqlalchemy import inspect, select, text
+from sqlalchemy import event, inspect, select, text
 from sqlalchemy.exc import OperationalError
 from starlette.requests import Request
 
@@ -462,3 +462,36 @@ def test_response_dtos_keep_nullable_names_and_omit_internal_fields(series_datab
     assert all(
         gas[field] is None for field in ("source_url", "license_id", "license_url", "conditions_url", "attribution")
     )
+
+
+@pytest.mark.parametrize(
+    "url, index",
+    [
+        ("/v1/market/shares?period=2024T4&community_code=13", "market_by_load_community"),
+        ("/v1/market/series/R2-001", "market_by_marketer_load"),
+        (
+            "/v1/market/share-series/R2-001?start_period=2024T4&end_period=2024T4&community_code=13",
+            "market_by_load_community",
+        ),
+        ("/v1/market/communities/R2-001?period=2024T4", "market_by_load_community"),
+    ],
+)
+def test_market_aggregates_use_indexed_facts_without_materializing_views(series_database: Path, url: str, index: str):
+    client = _client(series_database)
+    queries = []
+
+    @event.listens_for(client.app.state.database_engine, "before_cursor_execute")
+    def capture(connection, cursor, statement, parameters, context, many):
+        if statement.startswith("SELECT") and "market_rows" in statement:
+            queries.append((statement, parameters))
+
+    assert client.get(url).status_code == 200
+    assert queries
+    with sqlite3.connect(series_database) as connection:
+        plans = [
+            row[-1]
+            for statement, parameters in queries
+            for row in connection.execute("EXPLAIN QUERY PLAN " + statement, parameters)
+        ]
+    assert any(index in detail and "SEARCH market_rows" in detail for detail in plans)
+    assert all("SCAN market_rows" not in detail and "MATERIALIZE market_rows_view" not in detail for detail in plans)

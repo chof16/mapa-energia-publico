@@ -6,6 +6,7 @@ from electricity_map_domain import EnergySector
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
+from electricity_map_api.cache import CachedResponse
 from electricity_map_api.database import get_distribution_session
 from electricity_map_api.distribution import service
 from electricity_map_api.distribution.schemas import (
@@ -29,28 +30,44 @@ DATABASE_RESPONSES = {503: {"model": ErrorResponse, "description": "Distribution
 
 @router.get("/provinces", response_model=ProvincePresenceSummaryResponse, responses=DATABASE_RESPONSES)
 def province_summary(
-    query: Annotated[ProvinceQuery, Query()], session: DistributionSession
+    query: Annotated[ProvinceQuery, Query()], session: DistributionSession, cache: CachedResponse
 ) -> ProvincePresenceSummaryResponse:
     """Summarize documented companies per province for an incomplete map layer."""
-    return ProvincePresenceSummaryResponse(
-        sector=query.sector,
-        snapshot_date=service.snapshot_date(session),
-        scope="documented_provincial_presence",
-        complete=False,
-        items=service.documented_provinces(session) if query.sector == EnergySector.ELECTRICITY else [],
+    return cache.load(
+        "distribution.provinces",
+        query,
+        ProvincePresenceSummaryResponse,
+        lambda: ProvincePresenceSummaryResponse(
+            sector=query.sector,
+            snapshot_date=service.snapshot_date(session),
+            scope="documented_provincial_presence",
+            complete=False,
+            items=service.documented_provinces(session) if query.sector == EnergySector.ELECTRICITY else [],
+        ),
     )
 
 
 @router.get("/provinces/{province_code}", response_model=ProvincePresenceResponse, responses=DATABASE_RESPONSES)
 def province_presence(
-    province_code: ProvinceCode, query: Annotated[ProvinceQuery, Query()], session: DistributionSession
+    province_code: ProvinceCode,
+    query: Annotated[ProvinceQuery, Query()],
+    session: DistributionSession,
+    cache: CachedResponse,
 ) -> ProvincePresenceResponse:
     """List verified presence, never a complete network or a municipality assignment."""
-    return ProvincePresenceResponse(
-        sector=query.sector,
+    return cache.load(
+        "distribution.province",
+        query,
+        ProvincePresenceResponse,
+        lambda: ProvincePresenceResponse(
+            sector=query.sector,
+            province_code=province_code,
+            snapshot_date=service.snapshot_date(session),
+            scope="provincial_presence",
+            complete=False,
+            items=service.presence_for_province(session, province_code)
+            if query.sector == EnergySector.ELECTRICITY
+            else [],
+        ),
         province_code=province_code,
-        snapshot_date=service.snapshot_date(session),
-        scope="provincial_presence",
-        complete=False,
-        items=service.presence_for_province(session, province_code) if query.sector == EnergySector.ELECTRICITY else [],
     )
