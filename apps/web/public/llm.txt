@@ -1,0 +1,28 @@
+# Energía Abierta
+
+> Mapa interactivo de España para explorar distribuidoras eléctricas, comercializadoras y evolución del mercado con datos de fuentes oficiales.
+
+Proyecto independiente, sin afiliación con la CNMC, distribuidoras ni comercializadoras. Incluye la península, Baleares, Canarias, Ceuta y Melilla.
+
+Una distribuidora (R1) opera la red física; una comercializadora (R2) vende energía. La presencia provincial documentada no identifica la distribuidora de un domicilio, no demuestra cobertura municipal ni implica exclusividad. La falta de evidencia significa desconocido, no ausencia.
+
+Las cuotas y series del mercado son nacionales o autonómicas. Los nombres de empresas se conservan como se observaron en cada trimestre; no deben interpretarse como grupos empresariales históricos. Los límites cartográficos son actuales, incluso al consultar trimestres anteriores.
+
+El catálogo de comercializadoras de referencia (COR) es independiente: no implica una asociación automática con distribuidoras. No se comparan precios ni ofertas, no se tratan datos personales ni SIPS y el gas todavía no está implementado.
+
+## Páginas
+
+- [Mapa eléctrico](https://energiaabierta.com/): presencia provincial documentada de distribuidoras y cuotas autonómicas de comercializadoras.
+- [Evolución del mercado](https://energiaabierta.com/evolution): series trimestrales y comparación de comercializadoras en gráficos y tablas.
+- [Tarifa regulada](https://energiaabierta.com/regulated-tariff): catálogo de comercializadoras de referencia.
+- [Términos y condiciones](https://energiaabierta.com/terms): alcance, independencia, atribución y condiciones de uso.
+- [Cookies y almacenamiento](https://energiaabierta.com/cookies): información sobre almacenamiento y recursos externos.
+
+## Fuentes y reutilización
+
+Los datos de mercado proceden de CNMC Data; la cartografía, de IGN/CNIG, con códigos del INE. La evidencia de distribución incluye fuentes específicas citadas en la aplicación. Consultar siempre la fuente, fecha, revisión y confianza disponibles; no asumir actualizaciones automáticas.
+
+La licencia AGPL-3.0-only cubre el código original, no todos los datos. Cada fuente conserva sus propias condiciones. La base combinada no está validada íntegramente para redistribución.
+
+- [Código fuente](https://github.com/chof16/mapa-energia-publico): código, ejecución local y contribuciones.
+- [Fuentes y límites de reutilización](https://github.com/chof16/mapa-energia-publico/blob/main/docs/data-sources.md): procedencia, atribución y limitaciones de los datos.
