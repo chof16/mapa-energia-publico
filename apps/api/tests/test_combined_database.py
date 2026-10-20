@@ -33,20 +33,18 @@ def test_environment_selects_backend_without_fallback(monkeypatch: pytest.Monkey
     database = tmp_path / "mapa.sqlite"
     build_database(database)
     monkeypatch.setenv("MAPA_DATABASE", str(database))
-    monkeypatch.setenv("MAPA_TURSO_URL", "turso://example")
-    monkeypatch.setenv("MAPA_TURSO_AUTH_TOKEN", "secret")
+    monkeypatch.delenv("MAPA_DATABASE_URL", raising=False)
     monkeypatch.setenv("ENV", "development")
     local = Settings.from_environment()
     assert local.database == database
-    assert local.turso_url is None
-    assert local.turso_auth_token is None
+    assert local.database_url is None
+    monkeypatch.setenv("MAPA_DATABASE_URL", "postgresql://user:secret@example.org/mapa")
     monkeypatch.setenv("ENV", "production")
     remote = Settings.from_environment()
     assert remote.database is None
-    assert remote.turso_url == "turso://example"
+    assert remote.database_url == "postgresql://user:secret@example.org/mapa"
     assert "secret" not in repr(remote)
-    monkeypatch.delenv("MAPA_TURSO_URL")
-    monkeypatch.delenv("MAPA_TURSO_AUTH_TOKEN")
+    monkeypatch.delenv("MAPA_DATABASE_URL")
     with TestClient(create_app(Settings.from_environment())) as client:
         assert client.get("/v1/distribution/provinces").status_code == 503
 

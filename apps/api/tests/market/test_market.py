@@ -283,7 +283,7 @@ def test_share_series_caps_loaded_quarters(series_database: Path) -> None:
 def test_share_series_uses_shared_ip_quota(series_database: Path) -> None:
     settings = Settings(request_limit=1, database=series_database)
     app = create_app(settings)
-    # Exercise production quotas with a local fixture instead of a live Turso account.
+    # Exercise production quotas with a local fixture instead of a live database.
     app.state.database_engine = create_database_engine(series_database)
     client = TestClient(app)
     url = "/v1/market/share-series/R2-001"

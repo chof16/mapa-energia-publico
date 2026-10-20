@@ -80,11 +80,12 @@ without JSX use `.ts`.
 ## Data and local execution
 
 Market data and distribution decisions share one normalized database:
-local SQLite (`ENV=development`, `MAPA_DATABASE`) or remote Turso
-(`ENV=production`, URL and read-only token). Production has no local fallback.
+local SQLite (`ENV=development`, `MAPA_DATABASE`) or PostgreSQL
+(`MAPA_DATABASE_URL`, supported in both environments and taking precedence).
+Production has no local fallback. PostgreSQL uses psycopg with read-only,
+repeatable-read transactions and a bounded connection pool.
 Do not create tables or run migrations at API startup. Local refreshes are
-transactional; the remote uploader initializes empty databases only and does
-not perform incremental synchronization.
+transactional; PostgreSQL schema and data are imported separately.
 
 Use mapped SQLAlchemy models and `select()` expressions for API service queries,
 including distribution. Do not use `text()` for those reads. Database setup and
@@ -116,7 +117,7 @@ and `MAPA_API_WINDOW_SECONDS` are optional overrides. Development ignores quota
 settings. CORS is supported in both environments via `MAPA_CORS_ORIGINS`;
 development defaults to `http://localhost:5174` and `http://127.0.0.1:5174`,
 while production requires explicit origins. The UI can also use the Vite proxy
-with an empty `VITE_API_BASE_URL`. The private Turso connection token is separate
+with an empty `VITE_API_BASE_URL`. The private database connection URL is separate
 from public API access and remains server-side.
 
 Original code is licensed under AGPL-3.0-only; data retains its own terms.
@@ -143,6 +144,10 @@ to `main`. Keep these job names stable: branch protection requires them.
 CI uses synthetic data and does not need production secrets or downloaded maps.
 Python CI starts an isolated Redis service and sets `TEST_REDIS_URL` for the
 cross-instance cache integration test. Without that variable, only that test skips.
+CI also runs an isolated PostgreSQL service with `TEST_POSTGRES_URL` to verify
+synthetic API response parity and read-only transactions. That test uses a
+temporary schema and skips locally without the variable; never point it at the
+production database.
 Python CI uses an available uv-managed Python 3.14 build; the local Arch patch
 in `.python-version` may not be available as a managed download.
 
@@ -168,7 +173,7 @@ The previous data snapshot contains 60 quarters (2011T1–2025T4), 1,426,773 row
 and evidence for 48 of 52 provinces. Codes `09`, `12`, `35` and `47`
 remain unknown. This does not imply automatic updates.
 
-Remaining work: incremental Turso synchronization, scheduled refreshes,
+Remaining work: incremental PostgreSQL synchronization, scheduled refreshes,
 municipal coverage, verified historical corporate groups, and clarification
 of some distribution sources' terms before redistributing the complete dataset.
 

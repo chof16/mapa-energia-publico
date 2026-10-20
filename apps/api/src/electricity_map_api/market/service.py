@@ -1,6 +1,6 @@
 """Bounded ORM queries over imported market data, independent of HTTP routing."""
 
-from sqlalchemy import case, func, select
+from sqlalchemy import String, case, cast, func, select
 from sqlalchemy.orm import Session
 
 from electricity_map_api.market.exceptions import QuarterNotLoaded
@@ -147,7 +147,7 @@ def series(session: Session, marketer_code: str, query: SeriesQuery) -> SeriesRe
     ]
     if query.community_code is not None:
         conditions.append(MarketFact.community_code == query.community_code)
-    period = func.printf("%04dT%d", MarketPeriod.year, MarketPeriod.quarter)
+    period = cast(MarketPeriod.year, String) + "T" + cast(MarketPeriod.quarter, String)
     rows = session.execute(
         select(period.label("period"), func.sum(MarketFact.supplies).label("supplies"), MarketImport.metadata_modified)
         .select_from(MarketFact)
@@ -187,7 +187,7 @@ def share_series(session: Session, marketer_code: str, query: ShareSeriesQuery) 
     loads = session.scalars(selected.order_by(MarketLoad.period).limit(query.limit).offset(query.offset)).all()
     totals = {}
     if loads:
-        period = func.printf("%04dT%d", MarketPeriod.year, MarketPeriod.quarter)
+        period = cast(MarketPeriod.year, String) + "T" + cast(MarketPeriod.quarter, String)
         load_ids = dict(
             session.execute(
                 select(period, MarketImport.id)
