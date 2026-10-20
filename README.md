@@ -31,7 +31,7 @@ cuotas municipales/provinciales, datos personales, ofertas comerciales ni gas.
 | `packages/map_pipeline` | Cartografía IGN/INE y PMTiles |
 | `scripts` | Inicialización, migración y exportación de datos |
 
-En local, FastAPI consulta una SQLite y Vite sirve la interfaz y cartografía.
+En local, FastAPI consulta SQLite o PostgreSQL y Vite sirve la interfaz y cartografía.
 La web consulta la API; nunca necesita credenciales de la base de datos.
 La API es pública y no requiere claves ni tokens de acceso. En producción aplica
 por defecto un límite de 30 solicitudes por IP cada 60 segundos. En desarrollo
@@ -61,6 +61,14 @@ Copiar `.env.example` a `.env` y `apps/web/.env.example` a
 `MAPA_MAP_ASSETS_DIR` al directorio que contiene `data/administrativo.pmtiles`
 y `data/administrativo.etiquetas.geojson`. Los datos y credenciales no están
 incluidos en Git. Ver [preparación de datos](docs/data-sources.md).
+
+Para probar una base PostgreSQL ya preparada, definir `MAPA_DATABASE_URL` en el
+archivo de entorno del backend. Acepta una URL `postgresql://` y tiene prioridad
+sobre `MAPA_DATABASE`, tanto en desarrollo como en producción. Las conexiones
+son de solo lectura; la API no crea tablas ni importa datos al arrancar. Conservar
+los parámetros TLS de la conexión y usar un usuario con permisos de lectura.
+`MAPA_DATABASE` queda reservado a rutas SQLite locales. Los scripts de ingesta
+y exportación SQLite no sincronizan PostgreSQL.
 
 ### Preparar el mapa que muestra la UI
 
@@ -107,7 +115,7 @@ sintéticos y no requieren cuentas de proveedores ni descargas reales.
 ### Caché local opcional con Redis
 
 La API puede compartir las respuestas de mercado y distribución mediante Redis.
-Sin `MAPA_REDIS_URL`, consulta SQLite directamente. Para probar la caché con Docker:
+Sin `MAPA_REDIS_URL`, consulta la base directamente. Para probar la caché con Docker:
 
 ```sh
 docker run --rm --name mapa-redis -p 127.0.0.1:6379:6379 redis:7-alpine redis-server --save "" --appendonly no --maxmemory 64mb --maxmemory-policy allkeys-lru

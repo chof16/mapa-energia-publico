@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from electricity_map_api.cache import create_response_cache
 from electricity_map_api.config import Settings
-from electricity_map_api.database import create_database_engine, create_turso_engine
+from electricity_map_api.database import create_database_engine, create_postgres_engine
 from electricity_map_api.distribution.router import router as distribution_router
 from electricity_map_api.exceptions import APIError, api_error_handler, validation_error_handler
 from electricity_map_api.market.router import router as market_router
@@ -24,14 +24,18 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     """Build the application, allowing tests to inject explicit settings."""
     app_settings = settings or Settings.from_environment()
     engine = (
-        create_database_engine(app_settings.database)
+        create_postgres_engine(app_settings.database_url)
+        if app_settings.database_url
+        else create_database_engine(app_settings.database)
         if app_settings.development_mode
-        else create_turso_engine(app_settings.turso_url, app_settings.turso_auth_token)
+        else None
     )
     cache_source = (
-        str(app_settings.database.resolve())
+        app_settings.database_url
+        if app_settings.database_url
+        else str(app_settings.database.resolve())
         if app_settings.development_mode and app_settings.database
-        else app_settings.turso_url or "unconfigured"
+        else "unconfigured"
     )
     response_cache = create_response_cache(app_settings.redis_url, cache_source, app_settings.cache_ttl_seconds)
 

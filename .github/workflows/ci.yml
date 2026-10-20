@@ -22,7 +22,21 @@ jobs:
     env:
       ENV: development
       TEST_REDIS_URL: redis://127.0.0.1:6379/0
+      TEST_POSTGRES_URL: postgresql://test:test@127.0.0.1:5432/test
     services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U test -d test"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
       redis:
         image: redis:7-alpine
         ports:

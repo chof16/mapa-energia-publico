@@ -4,15 +4,37 @@ from collections.abc import Iterator
 from pathlib import Path
 from urllib.parse import quote
 
-import turso_serverless
 from fastapi import Request
 from sqlalchemy import URL, Engine, create_engine, event
-from sqlalchemy.dialects import registry
+from sqlalchemy.engine import make_url
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from sqlalchemy.pool import NullPool
 
 from electricity_map_api.exceptions import DatabaseUnavailable
+
+
+def create_postgres_engine(url: str) -> Engine:
+    """Use snapshot-consistent read-only transactions, including through PgBouncer."""
+    parsed = make_url(url).set(drivername="postgresql+psycopg")
+    engine = create_engine(
+        parsed,
+        connect_args={"connect_timeout": 15, "prepare_threshold": None},
+        pool_size=5,
+        max_overflow=0,
+        pool_timeout=15,
+        pool_pre_ping=True,
+        isolation_level="REPEATABLE READ",
+        execution_options={"postgresql_readonly": True},
+        hide_parameters=True,
+    )
+
+    @event.listens_for(engine, "begin")
+    def configure_transaction(connection) -> None:
+        # Transaction-local settings work with Neon pooled URLs; startup options do not.
+        connection.exec_driver_sql("SET LOCAL statement_timeout = '30s'")
+
+    return engine
 
 
 def create_database_engine(path: Path | None) -> Engine | None:
@@ -31,26 +53,6 @@ def create_database_engine(path: Path | None) -> Engine | None:
         connection.execute("PRAGMA query_only = ON")
         # A transaction spans all SELECTs in a response, including its source metadata.
         connection.isolation_level = None
-
-    @event.listens_for(engine, "begin")
-    def begin_transaction(connection) -> None:
-        connection.exec_driver_sql("BEGIN")
-
-    return engine
-
-
-def create_turso_engine(url: str | None, auth_token: str | None) -> Engine | None:
-    """Open a remote connection per request; the token must grant read-only access."""
-    if url is None:
-        return None
-    if not auth_token:
-        raise ValueError("Turso auth token is required")
-    registry.register("sqlite.turso_serverless", "electricity_map_api.turso", "TursoServerlessDialect")
-    engine = create_engine(
-        "sqlite+turso_serverless://",
-        creator=lambda: turso_serverless.connect(url, auth_token=auth_token, isolation_level=None),
-        poolclass=NullPool,
-    )
 
     @event.listens_for(engine, "begin")
     def begin_transaction(connection) -> None:
