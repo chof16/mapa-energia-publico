@@ -3,10 +3,10 @@ import { defineConfig } from 'vitest/config';
 import { loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode, command }) => {
   const environment = loadEnv(mode, '.', 'MAPA_');
   return {
-    publicDir: environment.MAPA_MAP_ASSETS_DIR || 'public',
+    publicDir: command === 'build' ? 'public' : environment.MAPA_MAP_ASSETS_DIR || 'public',
     server: {
       proxy: {
         '/v1': environment.MAPA_API_PROXY_TARGET || 'http://127.0.0.1:8001',

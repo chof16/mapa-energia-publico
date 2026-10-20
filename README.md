@@ -169,6 +169,29 @@ Si se compila con una URL explícita de API, añadir el origen de Preview
 y reiniciar la API. Con el proxy no hace falta ese ajuste.
 Los recursos generados y la configuración personal quedan fuera del repositorio.
 
+### Metadatos y rastreo
+
+`apps/web/index.html` incluye metadatos compartidos de búsqueda, Open Graph,
+Twitter y datos estructurados del sitio. No se generan metadatos por ruta.
+
+`apps/web/public/robots.txt`, `llms.txt` y `sitemap.xml` contienen las indicaciones
+de rastreo, el resumen para asistentes y las URL públicas sin filtros.
+`robot.txt` y `llm.txt` son copias estáticas de los nombres convencionales;
+mantenerlas sincronizadas al editar el contenido. Al añadir páginas, actualizar
+el sitemap.
+
+El build utiliza siempre `apps/web/public` para los recursos del frontend.
+`MAPA_MAP_ASSETS_DIR` permite usar otra carpeta durante el desarrollo local;
+para consultar allí los archivos de rastreo, usar `public` o incluir también
+esos archivos en la carpeta alternativa. Los mapas remotos se configuran mediante
+`VITE_ADMIN_PMTILES_URL` y `VITE_ADMIN_LABELS_URL`. Para un build con mapas
+locales, colocar la cartografía en `apps/web/public/data`.
+
+Las rutas desconocidas redirigen a `/` en el navegador, reemplazando la entrada
+del historial. El servidor estático debe servir los archivos existentes primero
+y usar `index.html` como alternativa para las demás rutas; el router de React
+necesita esa alternativa para procesar enlaces directos desconocidos.
+
 ## Datos y licencias
 
 Los datos originales proceden de IGN/CNIG, INE, CNMC y las demás fuentes

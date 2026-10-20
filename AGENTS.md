@@ -63,6 +63,10 @@ without JSX use `.ts`.
 - URLs preserve filters and history within `/`, `/evolution` and
   `/regulated-tariff`; navigation between pages starts without the previous
   page's filters.
+- Unknown browser routes redirect to `/` with history replacement. Serve static
+  crawler files before the SPA fallback. Keep the sitemap in sync with public
+  pages and omit filters. Production builds use the frontend public directory;
+  the map assets directory override applies only to local development.
 - The shared footer links to `/cookies`, `/terms` and GitHub and states
   independence from CNMC and companies. Information pages do not mount maps
   or query the API. Keep cookie wording consistent with external resources

@@ -1,4 +1,4 @@
-import type { RouteObject } from 'react-router';
+import { Navigate, type RouteObject } from 'react-router';
 import { MapLayout } from './map/layouts/MapLayout';
 import { HomePage } from './map/pages/home/HomePage';
 import { EvolutionLayout } from './market/layouts/EvolutionLayout';
@@ -32,4 +32,5 @@ export const appRoutes: RouteObject[] = [
     element: <ReferenceLayout />,
     children: [{ index: true, element: <ReferencePage /> }],
   },
+  { path: '*', element: <Navigate to="/" replace /> },
 ];
