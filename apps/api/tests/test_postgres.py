@@ -8,7 +8,9 @@ from uuid import uuid4
 import pytest
 from electricity_map_api.config import Settings
 from electricity_map_api.main import create_app
-from electricity_map_ingestion.market_store import initialize, write_quarter
+from electricity_map_ingestion import gas_distribution_store
+from electricity_map_ingestion.electricity_store import initialize, write_quarter
+from electricity_map_ingestion.gas_distribution import NetworkRow
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, event, text
 from sqlalchemy.engine import make_url
@@ -95,6 +97,16 @@ def test_postgres_matches_sqlite_and_forbids_writes(tmp_path: Path) -> None:
                     ("electricity", period, 4, "R1-001", "Red", None, None, "unavailable", "2.0TD", "01", 2, 20),
                 ],
             )
+        gas_distribution_store.initialize(source)
+        gas_distribution_store.write_load(
+            source,
+            [
+                NetworkRow(4, "01", "Synthetic municipality", "Synthetic distributor SA", 7_000_000_000),
+                NetworkRow(5, "01", "Synthetic municipality", "Synthetic distributor SA", 0),
+            ],
+            "a" * 64,
+        )
+        source.commit()
         # Use only trusted schema and synthetic rows, never a downloaded database.
         statements = [
             statement.replace("INTEGER", "BIGINT").replace(
@@ -121,6 +133,8 @@ def test_postgres_matches_sqlite_and_forbids_writes(tmp_path: Path) -> None:
         with TestClient(remote) as postgres, TestClient(local) as sqlite:
             for path in (
                 "/v1/market/quarters",
+                "/v1/electricity/quarters",
+                "/v1/electricity/shares?period=2024T4",
                 "/v1/market/shares?period=2024T4",
                 "/v1/market/shares?period=2024T4&community_code=01",
                 "/v1/market/series/R2-001",
@@ -128,6 +142,10 @@ def test_postgres_matches_sqlite_and_forbids_writes(tmp_path: Path) -> None:
                 "/v1/market/share-series/R2-001?community_code=01",
                 "/v1/market/share-series/R2-999",
                 "/v1/market/communities/R2-001?period=2024T4",
+                "/v1/gas/distribution/provinces",
+                "/v1/gas/distribution/provinces/01",
+                "/v1/gas/distribution/provinces/35",
+                "/v1/gas/distribution/revisions",
             ):
                 actual, expected = postgres.get(path), sqlite.get(path)
                 assert actual.status_code == expected.status_code == 200

@@ -1,8 +1,7 @@
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import { ChoiceSelector } from '../../components/custom/ChoiceSelector';
-import type { MarketState } from '../../market/interfaces/market-state';
-import { formatQuarter } from '../../market/lib/market-format';
+import { formatQuarter } from '../../electricity/lib/electricity-format';
 
 const SPEEDS = [
   { code: '3600', title: '0,5×' },
@@ -12,48 +11,43 @@ const SPEEDS = [
 ];
 
 export function PeriodTimeline({
-  market,
-  playing,
-  setPlaying,
+  periods, period, published, available, ready, loadError, contextKey,
+  preloadPeriod, changePeriod, playing, setPlaying,
 }: {
-  market: MarketState;
+  periods: string[];
+  period: string;
+  published: boolean;
+  available: boolean;
+  ready: boolean;
+  loadError: boolean;
+  contextKey: string;
+  preloadPeriod: (period: string) => Promise<unknown>;
+  changePeriod: (period: string, replace?: boolean) => void;
   playing: boolean;
   setPlaying: Dispatch<SetStateAction<boolean>>;
 }) {
-  const periods = [...(market.quarters.data || [])]
-    .reverse()
-    .map((quarter) => quarter.period);
-  const index = periods.indexOf(market.period);
-  const available = market.enabled && market.codeValid && market.published;
+  const index = periods.indexOf(period);
   const nextPeriod = index >= 0 ? periods[index + 1] : undefined;
   const targetPeriod = nextPeriod || periods[0];
-  const ready =
-    market.communities.isSuccess &&
-    market.marketers.isSuccess &&
-    (!market.community || market.areaMarketers.isSuccess);
-  const loadError =
-    market.communities.isError ||
-    market.marketers.isError ||
-    (!!market.community && market.areaMarketers.isError);
   const hasAdvanced = useRef(false);
-  const expectedPeriod = useRef(market.period);
-  const observedPeriod = useRef(market.period);
+  const expectedPeriod = useRef(period);
+  const observedPeriod = useRef(period);
   const [playbackError, setPlaybackError] = useState<string | null>(null);
   const [frameMs, setFrameMs] = useState('1800');
-  const preload = useEffectEvent((period: string) => market.preloadPeriod(period));
+  const preload = useEffectEvent((period: string) => preloadPeriod(period));
 
   const advance = useEffectEvent((period: string) => {
     expectedPeriod.current = period;
-    market.change({ period }, { replace: hasAdvanced.current });
+    changePeriod(period, hasAdvanced.current);
     hasAdvanced.current = true;
     if (period === periods.at(-1)) setPlaying(false);
   });
 
   useEffect(() => {
-    if (market.period === observedPeriod.current) return;
-    observedPeriod.current = market.period;
-    if (playing && market.period !== expectedPeriod.current) setPlaying(false);
-  }, [playing, market.period, setPlaying]);
+    if (period === observedPeriod.current) return;
+    observedPeriod.current = period;
+    if (playing && period !== expectedPeriod.current) setPlaying(false);
+  }, [playing, period, setPlaying]);
 
   useEffect(() => {
     if (!playing) return;
@@ -88,8 +82,7 @@ export function PeriodTimeline({
     ready,
     targetPeriod,
     frameMs,
-    market.marketer,
-    market.community,
+    contextKey,
     setPlaying,
   ]);
 
@@ -98,7 +91,7 @@ export function PeriodTimeline({
     hasAdvanced.current = false;
     expectedPeriod.current = period;
     setPlaybackError(null);
-    market.change({ period });
+    changePeriod(period);
   }
 
   function togglePlayback() {
@@ -107,7 +100,7 @@ export function PeriodTimeline({
       return;
     }
     hasAdvanced.current = false;
-    expectedPeriod.current = market.period;
+    expectedPeriod.current = period;
     setPlaybackError(null);
     // Starting at the latest observation preloads the first published quarter.
     // The first navigation remains in history; later frames replace only it.
@@ -118,7 +111,7 @@ export function PeriodTimeline({
     <div className="period-timeline" role="group" aria-label="Línea temporal del mapa">
       <div className="period-timeline-heading">
         <strong>Recorrer trimestres</strong>
-        <span>{market.published ? formatQuarter(market.period) : 'Sin periodo publicado'}</span>
+        <span>{published ? formatQuarter(period) : 'Sin periodo publicado'}</span>
       </div>
       <div className="period-timeline-controls">
         <button
@@ -154,7 +147,7 @@ export function PeriodTimeline({
           onChange={(event) => select(periods[Number(event.target.value)])}
           disabled={!available || periods.length < 2}
           aria-label="Trimestre del mapa"
-          aria-valuetext={market.published ? formatQuarter(market.period) : 'Sin periodo publicado'}
+          aria-valuetext={published ? formatQuarter(period) : 'Sin periodo publicado'}
         />
         <button
           type="button"

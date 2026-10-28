@@ -1,28 +1,38 @@
 # Energía Abierta
 
-> Mapa interactivo de España para explorar distribuidoras eléctricas, comercializadoras y evolución del mercado con datos de fuentes oficiales.
+> Mapa interactivo de España para explorar distribuidoras de electricidad y gas con fuentes oficiales; cuotas y evolución de comercializadoras solo para electricidad.
 
 Proyecto independiente, sin afiliación con la CNMC, distribuidoras ni comercializadoras. Incluye la península, Baleares, Canarias, Ceuta y Melilla.
 
-Una distribuidora (R1) opera la red física; una comercializadora (R2) vende energía. La presencia provincial documentada no identifica la distribuidora de un domicilio, no demuestra cobertura municipal ni implica exclusividad. La falta de evidencia significa desconocido, no ausencia.
+Una distribuidora opera la red física; una comercializadora vende energía. La presencia provincial documentada no identifica la distribuidora de un domicilio, no demuestra cobertura municipal ni implica exclusividad. La falta de evidencia significa desconocido, no ausencia.
 
-Las cuotas y series del mercado son nacionales o autonómicas. Los nombres de empresas se conservan como se observaron en cada trimestre; no deben interpretarse como grupos empresariales históricos. Los límites cartográficos son actuales, incluso al consultar trimestres anteriores.
+## Alcance por sector
 
-El catálogo de comercializadoras de referencia (COR) es independiente: no implica una asociación automática con distribuidoras. No se comparan precios ni ofertas, no se tratan datos personales ni SIPS y el gas todavía no está implementado.
+Electricidad conserva el mapa de distribuidoras, las cuotas nacionales o autonómicas, la evolución trimestral de comercializadoras y el catálogo independiente de comercializadoras de referencia (COR). Los nombres son los publicados en cada trimestre; no deben interpretarse como grupos empresariales históricos.
+
+Gas ofrece únicamente el mapa de distribuidoras, con los mismos controles territoriales, panel de evidencia y recuadro de Canarias. Se activa con `sector=gas` en el mapa. No ofrece estadísticas de comercializadoras, recuentos de clientes, ventas, cuotas, evolución, censos ni tarifa regulada.
+
+La evidencia de gas corresponde a junio de 2019 y a redes de gas natural de presión menor o igual a 4 bar. No representa redes actuales ni cobertura municipal. Los nombres son los observados en ese documento, sin equivalencias inferidas con empresas actuales. Las provincias sin evidencia siguen siendo desconocidas. Los límites cartográficos son actuales aunque el dato energético sea histórico.
+
+No se comparan precios ni ofertas, no se tratan datos personales ni SIPS.
 
 ## Páginas
 
-- [Mapa eléctrico](https://energiaabierta.com/): presencia provincial documentada de distribuidoras y cuotas autonómicas de comercializadoras.
-- [Evolución del mercado](https://energiaabierta.com/evolution): series trimestrales y comparación de comercializadoras en gráficos y tablas.
-- [Tarifa regulada](https://energiaabierta.com/regulated-tariff): catálogo de comercializadoras de referencia.
+- [Mapa de distribuidoras](https://energiaabierta.com/): presencia provincial documentada de electricidad y gas; cuotas de comercializadoras solo para electricidad.
+- [Evolución de comercializadoras eléctricas](https://energiaabierta.com/evolution): comparación trimestral en gráficos y tablas.
+- [Tarifa regulada eléctrica](https://energiaabierta.com/regulated-tariff): catálogo independiente de comercializadoras de referencia.
 - [Términos y condiciones](https://energiaabierta.com/terms): alcance, independencia, atribución y condiciones de uso.
 - [Cookies y almacenamiento](https://energiaabierta.com/cookies): información sobre almacenamiento y recursos externos.
 
+`/gas` es un alias que redirige al mapa con gas seleccionado; no es otra aplicación ni una página canónica. Los enlaces antiguos de evolución o tarifa regulada con `sector=gas` también redirigen al mapa de gas.
+
 ## Fuentes y reutilización
 
-Los datos de mercado proceden de CNMC Data; la cartografía, de IGN/CNIG, con códigos del INE. La evidencia de distribución incluye fuentes específicas citadas en la aplicación. Consultar siempre la fuente, fecha, revisión y confianza disponibles; no asumir actualizaciones automáticas.
+Las estadísticas eléctricas proceden de CNMC Data; la cartografía, de IGN/CNIG, con códigos del INE. La evidencia de distribución tiene fuentes y condiciones propias. Consultar siempre la fuente, fecha, revisión y confianza; no asumir actualizaciones automáticas.
 
-La licencia AGPL-3.0-only cubre el código original, no todos los datos. Cada fuente conserva sus propias condiciones. La base combinada no está validada íntegramente para redistribución.
+La API eléctrica canónica es `/v1/electricity`, con `/v1/market` como alias compatible obsoleto. Gas solo publica evidencia de distribuidoras mediante `/v1/gas/distribution/provinces`, `/v1/gas/distribution/provinces/{province_code}` y `/v1/gas/distribution/revisions`.
+
+La licencia AGPL-3.0-only cubre el código original, no todos los datos. Cada fuente conserva sus propias condiciones. Las condiciones de reutilización del anexo territorial de gas están pendientes de aclaración. La base combinada no está validada íntegramente para redistribución.
 
 - [Código fuente](https://github.com/chof16/mapa-energia-publico): código, ejecución local y contribuciones.
-- [Fuentes y límites de reutilización](https://github.com/chof16/mapa-energia-publico/blob/main/docs/data-sources.md): procedencia, atribución y limitaciones de los datos.
+- [Fuentes y límites de reutilización](https://github.com/chof16/mapa-energia-publico/blob/main/docs/data-sources.md): procedencia, atribución y limitaciones.

@@ -7,7 +7,8 @@ import { httpClient } from '../api/http-client';
 import { appRoutes } from '../app.router';
 import { territoryLabels } from './fixtures/territory-labels';
 import { MapBoundary } from './maplibre-boundary';
-import { marketResponse } from './fixtures/market';
+import { electricityResponse } from './fixtures/electricity';
+import { gasDistributionResponse } from './fixtures/gas-distribution';
 
 export function choosePublished(label: string, value: string) {
   const input = screen.getByRole('combobox', { name: label });
@@ -16,7 +17,7 @@ export function choosePublished(label: string, value: string) {
   fireEvent.keyDown(input, { key: 'Enter' });
 }
 
-export async function openMarketData(section: 'supplies' | 'shares' = 'supplies') {
+export async function openElectricityData(section: 'supplies' | 'shares' = 'supplies') {
   if (section === 'supplies') {
     const input = screen.getByRole('combobox', { name: 'Comercializadora · código R2' });
     await waitFor(() => expect(input).toBeEnabled());
@@ -84,9 +85,9 @@ beforeEach(() => {
     data: JSON.stringify(
       config.url?.endsWith('/v1/distribution/provinces')
         ? provinceSummaryResponse
-        : config.url?.includes('/v1/market/')
-          ? marketResponse(config.url, config.params)
-          : territoryLabels,
+        : config.url?.includes('/v1/electricity/')
+          ? electricityResponse(config.url, config.params)
+          : config.url?.includes('/v1/gas/distribution/') ? gasDistributionResponse(config.url) : territoryLabels,
     ),
     status: 200,
     statusText: 'OK',
@@ -137,8 +138,8 @@ export function mockProvinceResponse(value: unknown = provinceResponse) {
       ? provinceSummaryResponse
       : config.url?.includes('/v1/distribution/')
         ? value
-        : config.url?.includes('/v1/market/')
-          ? marketResponse(config.url, config.params)
+        : config.url?.includes('/v1/electricity/')
+          ? electricityResponse(config.url, config.params)
           : territoryLabels),
     status: 200, statusText: 'OK', headers: {}, config,
   }));

@@ -3,9 +3,12 @@
 ## Scope
 
 A public map of Spain, including the islands, Ceuta and Melilla, for exploring
-electricity distributors, retailers and market trends. Gas is planned: retain
-the `sector` field without implementing it yet. Prices, offers, personal data
-and SIPS are out of scope.
+electricity and gas distributors through a shared map UI. Electricity also has
+retailer statistics, evolution and reference-retailer guidance. Gas is limited
+to historical distributor network evidence under `/v1/gas/distribution`.
+Gas retailer statistics, client counts, shares, censuses and regulated suppliers
+are out of scope. Gas purchases and sales are deferred to a separate task.
+Prices, offers, personal data and SIPS are out of scope.
 
 ## Working agreement
 
@@ -30,39 +33,105 @@ and SIPS are out of scope.
 - `apps/web`: React, Vite, strict TypeScript and MapLibre.
 - `apps/api`: FastAPI, SQLAlchemy and Pydantic DTOs organized by feature.
 - `packages/domain`: rules independent of FastAPI and external sources.
-- `packages/ingestion`: batch CNMC Data ingestion and refresh.
+- `packages/ingestion`: electricity CNMC Data ingestion/refresh and gas network annex import.
 - `packages/map_pipeline`: cartographic preparation and PMTiles.
 - `scripts`: database initialization, migration and export.
 - `docs`: operating instructions and data rules.
 
-Organize React by feature (`map`, `market`, `distribution`, `legal`), adding
+API features (`electricity`, `gas`, `distribution`) follow the same separation:
+`router.py` validates query DTOs, declares response types/errors, applies caching
+and delegates; `service.py` performs bounded mapped SQLAlchemy reads;
+`schemas.py`, `models.py` and `exceptions.py` own feature-specific contracts.
+Declare route return annotations and keep application errors out of services.
+Share the read-only `DatabaseSession` through root `dependencies.py` and common
+query constraints, source/revision metadata and response fields through root
+`schemas.py`; do not import those from another feature. Ordinary item lists use
+limit 50 by default, at most 100, and offset 0–10,000 in both request and response
+DTOs. Time-series endpoints retain their documented quarter-specific limits.
+
+Electricity ingestion and the gas network importer share `cnmc_client.py` for
+public CNMC transport and scalar validation. Keep source-specific
+schemas and semantics in their importers; do not call another importer's private
+helpers. Preserve byte limits before parsing, stable pagination, declared-total
+checks, request identification and pauses. Persistence belongs in the matching
+store module and writes run inside the importer's explicit transaction.
+Name sector-specific ingestion modules and commands explicitly: `cnmc_electricity`,
+`refresh_cnmc_electricity`, `electricity_store`, `gas_distribution` and
+`gas_distribution_store`; use `ingest-cnmc-electricity`, `refresh-cnmc-electricity`
+and `ingest-gas-distribution`. Do not use the ambiguous
+`market` name for electricity-only backend modules. The canonical electricity API
+is `/v1/electricity`; `/v1/market` remains a deprecated compatible alias for older
+clients. The frontend uses `/v1/electricity`. Database table names remain stable. Keep OpenAPI
+component names unique across features so a new gas DTO cannot rename an
+established electricity response schema.
+
+Organize React by feature (`map`, `electricity`, `gas`, `distribution`, `legal`), adding
 `pages`, `layouts`, `components`, `hooks`, `actions`, `interfaces`, `lib`
 and `store` only as needed. Keep page-specific UI in `pages/<page>/ui`.
 Shared code belongs in `src/api`, `src/components`, `src/interfaces` and
 `src/lib`; keep `main.tsx` and `app.router.tsx` in `src`.
 Do not create empty directories. Components and hooks use `.tsx`; utilities
 without JSX use `.ts`.
+Electricity and gas must share the same map screen, territorial controls, panels
+and interaction patterns. Reuse common UI with sector-specific data adapters;
+do not create a separate gas dashboard or a different layout. Gas exposes only
+distributor presence and its source, with no retailer, evolution or regulated-tariff
+controls. Keep source scope and dates explicit without inventing geographic coverage.
+On compact map screens, filters, distributor details and the legend start collapsed
+and open on demand. Preserve accessible toggles, Escape-to-close behavior for details
+and legend, the Canary Islands control, and direct touch panning. Keep this behavior
+shared by both sectors, including when resizing or rotating the viewport.
 
 ## Contracts
 
-- A distributor (R1, distribuidora) operates the physical network; a retailer
-  (R2, comercializadora) sells energy. Multiple distributors can coexist in
-  one municipality.
-- Market data is national or regional. Do not infer provincial or municipal
-  coverage or consolidate companies without evidence.
+- Gas exposes only `/v1/gas/distribution/provinces`,
+  `/v1/gas/distribution/provinces/{province_code}` and
+  `/v1/gas/distribution/revisions`. All use shared pagination and optional `load_id`.
+  Do not retain unused gas statistical/census models, DTOs, routes or importers.
+  Never infer distributor coverage from contact addresses or retailer totals.
+- Gas network presence uses a separate, checksum-reviewed CNMC report annex for
+  June 2019, covering natural-gas networks at most 4 bar. Install it explicitly
+  with `ingest-gas-distribution`; never at API startup.
+  Keep immutable `gas_network_loads` and source rows. Provincial API summaries
+  group observed distributor names and sum supply points explicitly; repeated
+  source rows remain separate. Exact reviewed province labels map to INE codes.
+  The annex has no municipal INE codes: do not fuzzy-join or color municipalities,
+  infer current identities, groups or exclusivity, or treat missing provinces as
+  no network. Expose source month, publication date, hash and `complete=false`.
+  Source reuse is `review_pending`, independent of CNMC Data; do not redistribute
+  raw annexes or the combined database without reviewing the applicable terms.
+- `/v1/electricity` and its `/v1/market` alias keep the normalized quarterly R2
+  contract, including the existing `sector` parameter and empty/not-loaded
+  behavior for absent gas data. They do not read `gas_*` tables or alias
+  `/v1/gas`. Only introduce a common market
+  contract when a source supports equivalent periods, identifiers and scope.
+- Install gas network tables explicitly using the importer, never at API startup.
+  The schema is additive to the existing normalized database. Do not import or
+  publish electronic-office censuses, personal identities or contact addresses.
+  CNMC Data and other CNMC sources retain independent reuse conditions.
+
+- A distributor (distribuidora; R1 for electricity) operates the physical network;
+  a retailer (comercializadora; R2 for electricity) sells energy. Multiple
+  distributors can coexist in one municipality. Gas network supply points are
+  not retailer client counts or individual CUPS identifiers.
+- Electricity market data is national or regional. Do not infer provincial
+  or municipal company coverage or consolidate companies without evidence.
 - Distribution publishes only accepted positive claims with a source, date
   and confidence level. `complete=false` with an empty list means unknown.
   Provincial colors do not delineate the network and are hidden at municipal zoom.
-- Reference retailers (COR) have an independent catalogue. Do not automatically
+- Electricity reference retailers (COR) have an independent catalogue; the
+  regulated-tariff page does not publish tariff prices. Do not automatically
   associate them with distributors or invent exclusivity. Corporate affiliation
   and geographic presence require independent evidence.
 - Preserve leading zeros in INE codes, exact joins by code, and the layers
   `municipios`, `provincias`, `ccaa` and `unidades_auxiliares`. Use dated
   current boundaries without presenting them as historical boundaries.
   Keep one point label per territory.
-- URLs preserve filters and history within `/`, `/evolution` and
+- Electricity URLs preserve filters and history within `/`, `/evolution` and
   `/regulated-tariff`; navigation between pages starts without the previous
-  page's filters.
+  page's filters. Gas uses `/?sector=gas`; `/gas` is an entry alias. Legacy gas
+  evolution or regulated-tariff links return to the gas map. Sector changes must
+  not carry electricity identifiers or statistical filters into the gas contract.
 - Unknown browser routes redirect to `/` with history replacement. Serve static
   crawler files before the SPA fallback. Keep the sitemap in sync with public
   pages and omit filters. Production builds use the frontend public directory;
@@ -169,13 +238,16 @@ was actually verified; a local build is not evidence of a remote deployment.
 
 Public code and local setup guides prepared on 2026-10-08; the owner selected
 AGPL-3.0-only and English agent instructions before the first public commit.
-The previous data snapshot contains 60 quarters (2011T1–2025T4), 1,426,773 rows
-and evidence for 48 of 52 provinces. Codes `09`, `12`, `35` and `47`
-remain unknown. This does not imply automatic updates.
+The electricity snapshot contains 60 quarters (2011T1–2025T4), 1,426,773 rows
+and distribution evidence for 48 of 52 provinces. Codes `09`, `12`, `35` and `47`
+remain unknown for electricity. The separate June 2019 gas annex has 1,993 source
+rows, 18 observed distributor names and evidence for 48 provinces; `35`, `38`,
+`51` and `52` remain unknown in that source. Neither snapshot implies automatic updates.
 
-Remaining work: incremental PostgreSQL synchronization, scheduled refreshes,
-municipal coverage, verified historical corporate groups, and clarification
-of some distribution sources' terms before redistributing the complete dataset.
+Remaining work: incremental PostgreSQL synchronization, scheduled refreshes, municipal coverage,
+verified historical corporate groups, newer gas network evidence, and
+clarification of some distribution sources' terms before redistributing the
+complete dataset, including the historical gas-network annex.
 
 Update this guide when contracts or instructions change. Keep operational
 details in `docs` rather than accumulating session transcripts here.

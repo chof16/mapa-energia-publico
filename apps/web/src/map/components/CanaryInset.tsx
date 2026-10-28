@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Map as MapLibreMap } from 'maplibre-gl';
-import type { CommunityShare } from '../../market/interfaces/market';
-import { marketFill } from '../../market/lib/market-style';
+import type { CommunityShare } from '../../electricity/interfaces/electricity';
+import { electricityFill } from '../../electricity/lib/electricity-style';
 import {
   registerPmtiles,
   canaryBounds,
@@ -13,7 +13,7 @@ export function CanaryInset({ onClick, items }: { onClick: () => void; items?: C
   const mapRef = useRef<MapLibreMap | null>(null);
   const [ready, setReady] = useState(false);
   useEffect(() => {
-    if (ready) mapRef.current?.setPaintProperty('islas', 'fill-color', items ? marketFill(items) : '#e5ebef');
+    if (ready) mapRef.current?.setPaintProperty('islas', 'fill-color', items ? electricityFill(items) : '#e5ebef');
   }, [ready, items]);
   useEffect(() => {
     if (!node.current) return;

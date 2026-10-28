@@ -2,7 +2,7 @@ import { RetryButton } from '../../components/custom/RetryButton';
 import type { Territory } from '../../map/interfaces/territory';
 import { useProvincePresence } from '../hooks/useProvincePresence';
 import type { CoverageEvidence } from '../interfaces/distribution';
-import '../styles.css';
+import { ProvinceEvidencePanel } from './ProvinceEvidencePanel';
 
 const confidenceLabels: Record<CoverageEvidence['confidence'], string> = {
   official_document: 'Documento oficial',
@@ -25,22 +25,10 @@ export function ProvinceEvidence({ selection }: { selection: Territory[] }) {
   const municipality = selection.find((item) => item.level === 'municipios');
   const query = useProvincePresence(province?.code ?? null);
 
-  if (!province) return (
-    <aside className="province-evidence province-prompt" aria-label="Evidencia de distribuidoras" tabIndex={0}>
-      <strong>Distribuidoras · evidencia provincial</strong>
-      <span>El mapa marca provincias con presencias documentadas. Elige una para consultar sus fuentes. No hay una cobertura completa para {selection.length ? 'toda la comunidad' : 'España'}.</span>
-    </aside>
-  );
-
   return (
-    <aside className="province-evidence" aria-label={`Evidencia de distribuidoras en ${province.title}`} tabIndex={0}>
-      <div className="province-evidence-heading">
-        <div>
-          <span className="province-evidence-kicker">Distribuidoras · electricidad</span>
-          <h2>{province.title} · {province.code}</h2>
-        </div>
-        <span className="province-evidence-scope">Presencias provinciales parciales</span>
-      </div>
+    <ProvinceEvidencePanel province={province} label={province ? `Evidencia de distribuidoras en ${province.title}` : 'Evidencia de distribuidoras'}
+      sector="electricidad" scope="Presencias provinciales parciales"
+      prompt={<>El mapa marca provincias con presencias documentadas. Elige una para consultar sus fuentes. No hay una cobertura completa para {selection.length ? 'toda la comunidad' : 'España'}.</>}>
       {municipality && (
         <p className="province-evidence-warning">
           Has seleccionado {municipality.title}. Esta evidencia es provincial y no prueba cobertura en ese municipio.
@@ -90,6 +78,6 @@ export function ProvinceEvidence({ selection }: { selection: Territory[] }) {
           <p className="province-evidence-note">Lista incompleta: no indica ausencia de otras distribuidoras, exclusividad ni cobertura de toda la provincia. El grupo empresarial no identifica una COR ni añade cobertura. Instantánea comprobada el {formatDate(query.data.snapshot_date)}; no es una fecha de inicio ni un histórico.</p>
         </>
       )}
-    </aside>
+    </ProvinceEvidencePanel>
   );
 }

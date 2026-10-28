@@ -79,9 +79,9 @@ export function geometryLayers(): LayerSpecification[] {
       layout: { visibility: 'none' },
       paint: { 'fill-color': '#e5ebef', 'fill-opacity': 0.78 },
     },
-    // Market data belongs only to autonomous communities, at every zoom.
+    // Electricity data belongs only to autonomous communities, at every zoom.
     {
-      id: 'market-fill', type: 'fill', source: SOURCE_ID, 'source-layer': 'ccaa',
+      id: 'electricity-fill', type: 'fill', source: SOURCE_ID, 'source-layer': 'ccaa',
       layout: { visibility: 'none' }, paint: { 'fill-color': '#e8e7e1', 'fill-opacity': 1 },
     },
     // Draw parent boundaries above all fills and fine lines.

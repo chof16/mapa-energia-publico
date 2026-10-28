@@ -11,11 +11,12 @@
 .map-layer-switch button:hover:not(:disabled):not([aria-pressed='true']) { background: var(--hover); }
 .map-layer-switch button:disabled { opacity: .55; }
 .map-filter-fields { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 20px; align-items: start; min-width: 0; }
+.map-toolbar[data-sector='gas'] .map-filter-fields { grid-template-columns: minmax(0, 1fr); }
 .map-filters-toggle, .map-filters-done { display: none; }
-.map-toolbar .market-controls { display: grid; grid-template-columns: 90px 155px minmax(240px, 1fr); gap: 8px 10px; }
+.map-toolbar .electricity-controls { display: grid; grid-template-columns: 90px 155px minmax(240px, 1fr); gap: 8px 10px; }
 .map-toolbar .published-year-control, .map-toolbar .published-quarter-control { width: auto; }
-.map-toolbar .market-controls .marketer-control { min-width: 0; }
-.map-toolbar .market-control-status { grid-column: 1 / -1; }
+.map-toolbar .electricity-controls .marketer-control { min-width: 0; }
+.map-toolbar .electricity-control-status { grid-column: 1 / -1; }
 .map-toolbar button.retry-button { margin: 0; }
 .hierarchy { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 10px; row-gap: 7px; min-width: 0; margin: 0; padding: 0; border: 0; }
 .hierarchy-field { min-width: 0; }
@@ -34,7 +35,7 @@
 .company-search-summary strong { display: block; color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
 .company-details-trigger { padding: 0; border: 0; background: transparent; color: var(--green); font-size: 11px; line-height: 1.5; text-decoration: underline; text-underline-offset: 3px; }
 .company-data { position: absolute; z-index: 16; top: calc(100% + 8px); left: 0; width: max(100%, 360px); max-width: calc(100vw - 48px); max-height: min(580px, 60dvh); overflow-y: auto; overscroll-behavior: contain; padding: 16px; border: 1px solid var(--control-line); border-radius: 10px; background: var(--paper); box-shadow: var(--shadow); }
-.company-data .market-summary { margin: 0; padding: 8px 0 0; border: 0; }
+.company-data .electricity-summary { margin: 0; padding: 8px 0 0; border: 0; }
 
 .period-timeline { grid-column: 1 / -1; display: grid; grid-template-columns: 158px minmax(0, 1fr) 100px; align-items: center; gap: 12px; width: min(100%, 860px); margin-inline: auto; background: var(--paper); }
 .period-timeline-heading { display: grid; gap: 2px; font-size: 12px; }
@@ -65,7 +66,9 @@
 .map-bottom-overlays { position: absolute; left: 20px; right: 20px; bottom: 24px; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; pointer-events: none; }
 .map-bottom-overlays > * { pointer-events: auto; }
 .map-legend { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; max-width: 100%; min-width: 0; font-size: 11px; }
-.map-legend > span { white-space: nowrap; }
+.map-legend-content { display: contents; }
+.map-legend-content > span { white-space: nowrap; }
+.map-legend-toggle { display: none; }
 .map-legend a { color: var(--green); }
 .distribution-legend-note { flex-basis: 100%; white-space: normal !important; line-height: 1.45; }
 .distribution-legend-note .retry-button { min-height: 32px; margin: 0 0 0 6px; }
@@ -86,7 +89,7 @@
 /* Medium screens use two filter rows; the map always spans the viewport. */
 @media (min-width: 1100px) and (max-width: 1350px) {
   .map-filter-fields { grid-template-columns: minmax(0, 1fr); gap: 12px; }
-  .map-toolbar .market-controls { grid-template-columns: 110px 180px minmax(0, 1fr); }
+  .map-toolbar .electricity-controls { grid-template-columns: 110px 180px minmax(0, 1fr); }
 }
 /* Compact filters float over the map instead of consuming its height. */
 @media (max-width: 1099px), (max-height: 600px) {
@@ -97,7 +100,7 @@
   .map-filter-fields { position: absolute; top: 100%; left: var(--gutter); right: var(--gutter); z-index: 16; display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; max-height: min(65dvh, calc(100dvh - 100% - 120px)); overflow-y: auto; overscroll-behavior: contain; padding: 16px; border: 1px solid var(--control-line); border-radius: 0 0 12px 12px; background: var(--paper); box-shadow: var(--shadow); }
   .map-filters-collapsed .map-filter-fields { display: none; }
   .map-toolbar:not(.map-filters-collapsed) .period-timeline { display: none; }
-  .map-toolbar .market-controls { grid-template-columns: 110px 170px minmax(0, 1fr); }
+  .map-toolbar .electricity-controls { grid-template-columns: 110px 170px minmax(0, 1fr); }
   .map-filter-fields .selector-options, .company-data { position: relative; top: auto; width: 100%; max-width: none; margin-top: 8px; box-shadow: none; }
   .map-filter-fields .selector-options { max-height: 240px; }
   .company-data { max-height: none; overflow: visible; }
@@ -112,13 +115,13 @@
   .map-layer-switch { width: 100%; }
   .map-layer-switch button { flex: 1; padding-inline: 6px; }
   .map-filter-fields { left: 0; right: 0; padding: 12px var(--gutter) max(12px, env(safe-area-inset-bottom)); }
-  .map-toolbar .market-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .map-toolbar .electricity-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .map-toolbar .marketer-control { grid-column: 1 / -1; grid-row: 1; }
   .hierarchy { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .company-search .selector-options { max-height: 220px; }
   .company-search-summary { font-size: 12px; }
   .company-search .selector-options [role='option'] { min-height: 64px; }
-  .company-data .market-list-controls input[type='search'] { font-size: 16px; }
+  .company-data .electricity-list-controls input[type='search'] { font-size: 16px; }
   .period-timeline { grid-template-columns: minmax(0, 1fr) 100px; gap: 4px 8px; }
   .period-timeline-heading strong { display: none; }
   .period-timeline-controls { grid-column: 1 / -1; }
@@ -144,4 +147,12 @@
   .period-timeline .timeline-speed { grid-column: 2; grid-row: 1; }
   .canarias-inset { padding: 8px; width: 120px; }
   .inset-map, .inset-caption { display: none; }
+}
+@media (max-width: 700px), (max-height: 600px) {
+  .map-bottom-overlays { left: 12px; right: 12px; bottom: 24px; flex-direction: row; align-items: flex-end; justify-content: space-between; gap: 12px; }
+  .map-wrap[data-evidence='true'] .map-bottom-overlays { bottom: 84px; }
+  .map-legend { padding: 0; }
+  .map-legend-toggle { display: block; min-height: 44px; padding: 8px 12px; border: 0; border-radius: 8px; background: var(--paper); color: var(--green); font-size: 12px; }
+  .map-legend-content { position: absolute; right: 0; bottom: calc(100% + 8px); display: flex; flex-wrap: wrap; align-items: center; gap: 8px; width: min(320px, calc(100vw - 24px)); max-height: min(42dvh, 260px); overflow-y: auto; overscroll-behavior: contain; padding: 12px; border: 1px solid var(--control-line); border-radius: 10px; background: var(--paper); box-shadow: var(--shadow); font-size: 11px; }
+  .map-legend-content > span { white-space: normal; }
 }

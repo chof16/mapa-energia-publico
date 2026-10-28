@@ -9,10 +9,11 @@ import { isTerritoryLevel, territoryPath } from '../lib/territories';
 import type { TerritoryLevel, Territory } from '../lib/territories';
 import { useSelectionUrl } from './useSelectionUrl';
 import { useTerritoryCatalog } from './useTerritoryCatalog';
-import { useMarket } from '../../market/hooks/useMarket';
-import { marketFill } from '../../market/lib/market-style';
+import { useElectricity } from '../../electricity/hooks/useElectricity';
+import { electricityFill } from '../../electricity/lib/electricity-style';
 import { useProvinceSummary } from '../../distribution/hooks/useProvinceSummary';
 import { documentedFill } from '../../distribution/lib/distribution-style';
+import { useGasProvinceSummary } from '../../gas/hooks/useGasDistribution';
 import {
   TILE_URL,
   SOURCE_ID,
@@ -44,13 +45,16 @@ export function useMapExplorer() {
 
   const current = selection.at(-1) || null;
   const community = selection.find((item) => item.level === 'ccaa') || null;
-  const market = useMarket(
+  const electricity = useElectricity(
     sector === 'electricidad',
     false,
     community?.code || null,
   );
-  const distributionEnabled = sector === 'electricidad' && market.layer === 'distribution';
+  const distributionEnabled = sector === 'electricidad' && electricity.layer === 'distribution';
   const provinceSummary = useProvinceSummary(distributionEnabled);
+  const gasDistributionEnabled = sector === 'gas';
+  const gasProvinceSummary = useGasProvinceSummary(gasDistributionEnabled);
+  const activeSummary = sector === 'gas' ? gasProvinceSummary : provinceSummary;
 
   useEffect(() => {
     const map = mapRef.current;
@@ -58,31 +62,31 @@ export function useMapExplorer() {
     map.setPaintProperty(
       'distribution-fill',
       'fill-color',
-      documentedFill(provinceSummary.data?.items || []),
+      documentedFill(activeSummary.data?.items || []),
     );
     map.setLayoutProperty(
       'distribution-fill',
       'visibility',
-      distributionEnabled && !!provinceSummary.data && !provinceSummary.isError ? 'visible' : 'none',
+      (distributionEnabled || gasDistributionEnabled) && !!activeSummary.data && !activeSummary.isError ? 'visible' : 'none',
     );
-  }, [mapStatus, distributionEnabled, provinceSummary.data, provinceSummary.isError]);
+  }, [mapStatus, distributionEnabled, gasDistributionEnabled, activeSummary.data, activeSummary.isError]);
 
   useEffect(() => {
     const map = mapRef.current;
     if (!map || mapStatus !== 'ready') return;
     map.setPaintProperty(
-      'market-fill',
+      'electricity-fill',
       'fill-color',
-      marketFill(market.enabled ? market.communities.data?.items || [] : []),
+      electricityFill(electricity.enabled ? electricity.communities.data?.items || [] : []),
     );
     map.setLayoutProperty(
-      'market-fill',
+      'electricity-fill',
       'visibility',
-      market.enabled && market.layer === 'market' && !!market.communities.data
+      electricity.enabled && electricity.layer === 'market' && !!electricity.communities.data
         ? 'visible'
         : 'none',
     );
-  }, [mapStatus, market.enabled, market.layer, market.communities.data]);
+  }, [mapStatus, electricity.enabled, electricity.layer, electricity.communities.data]);
 
   function clearSelectedFeature() {
     const map = mapRef.current;
@@ -197,7 +201,8 @@ export function useMapExplorer() {
         ],
       },
       attributionControl: false,
-      cooperativeGestures: true,
+      // The map occupies the mobile workspace: allow one-finger panning.
+      cooperativeGestures: !window.matchMedia?.('(pointer: coarse)').matches,
     });
     mapRef.current = map;
     fitTerritory(map, mainlandBounds, 0);
@@ -231,12 +236,12 @@ export function useMapExplorer() {
 
     map.on('load', () => {
       geometryLayers().forEach((layer) => map.addLayer(layer));
-      setMapStatus('ready');
+      setMapStatus((status) => status === 'missing' ? status : 'ready');
     });
     map.on('error', (event) => {
       const message = event.error?.message || '';
       if (
-        /404|Failed to fetch|NetworkError|Not Found|Wrong magic number|Invalid PMTiles/i.test(
+        /404|Failed to fetch|NetworkError|Not Found|Wrong magic number|Invalid PMTiles|PMTiles header|Bad response code/i.test(
           message,
         )
       ) {
@@ -298,8 +303,9 @@ export function useMapExplorer() {
 
   return {
     mapNode,
-    market,
+    electricity,
     provinceSummary,
+    gasProvinceSummary,
     community,
     catalog,
     catalogError,

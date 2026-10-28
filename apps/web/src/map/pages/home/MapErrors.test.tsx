@@ -5,8 +5,8 @@ import { describe, expect, it, vi } from 'vitest';
 import { appRoutes } from '../../../app.router';
 import { territoryLabels } from '../../../test/fixtures/territory-labels';
 import { MapBoundary } from '../../../test/maplibre-boundary';
-import { marketResponse, marketQuarters } from '../../../test/fixtures/market';
-import { choosePublished, openMarketData, selectedTerritory, network, renderRoute, renderExplorer as renderHome } from '../../../test/exploration-route-fixture';
+import { electricityResponse, electricityQuarters } from '../../../test/fixtures/electricity';
+import { choosePublished, openElectricityData, selectedTerritory, network, renderRoute, renderExplorer as renderHome } from '../../../test/exploration-route-fixture';
 
 vi.mock('maplibre-gl', async () => {
   const { MapBoundary } = await import('../../../test/maplibre-boundary');
@@ -19,7 +19,7 @@ vi.mock('maplibre-gl', async () => {
 });
 
 describe('map loading errors', () => {
-  it('rejects unpublished periods and invalid codes without requesting their market values', async () => {
+  it('rejects unpublished periods and invalid codes without requesting their electricity values', async () => {
     const { router } = await renderHome('/?period=2025T3&marketer=R2-000');
     await screen.findByText(
       'Este trimestre no está publicado. Elige uno de la lista.',
@@ -64,15 +64,15 @@ describe('map loading errors', () => {
           completeRetry = resolve;
         });
       }
-      const response = config.url?.includes('/v1/market/')
-        ? marketResponse(config.url, config.params)
+      const response = config.url?.includes('/v1/electricity/')
+        ? electricityResponse(config.url, config.params)
         : territoryLabels;
       return {
         data: JSON.stringify(
           config.url?.endsWith('/quarters')
             ? {
                 sector: 'electricity',
-                quarters: [{ ...marketQuarters[0], period: '2011T4' }],
+                quarters: [{ ...electricityQuarters[0], period: '2011T4' }],
               }
             : response,
         ),
@@ -99,7 +99,7 @@ describe('map loading errors', () => {
     await act(async () => {
       completeRetry?.();
     });
-    await openMarketData();
+    await openElectricityData();
     await screen.findByRole('listbox', {
       name: 'Comercializadora · código R2',
     });
@@ -114,7 +114,7 @@ describe('map loading errors', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('offers a retry after unavailable market data and keeps a missing share endpoint pending', async () => {
+  it('offers a retry after unavailable electricity data and keeps a missing share endpoint pending', async () => {
     let unavailable = true;
     network.mockImplementation(async (config) => {
       const status =
@@ -133,8 +133,8 @@ describe('map loading errors', () => {
         );
       return {
         data: JSON.stringify(
-          config.url?.includes('/v1/market/')
-            ? marketResponse(config.url, config.params)
+          config.url?.includes('/v1/electricity/')
+            ? electricityResponse(config.url, config.params)
             : territoryLabels,
         ),
         status,
@@ -144,7 +144,7 @@ describe('map loading errors', () => {
       };
     });
     await renderHome('/?period=2025T4&marketer=R2-001');
-    await openMarketData('shares');
+    await openElectricityData('shares');
     await screen.findByRole('button', { name: 'Reintentar cuotas' });
     expect(
       screen.queryByRole('list', { name: 'Cuotas autonómicas · 2025T4' }),
