@@ -6,7 +6,7 @@ import mapLibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&ur
 import App from './App.tsx';
 import './styles.css';
 import './map/styles.css';
-import './market/styles.css';
+import './electricity/styles.css';
 
 // Bundle the worker and its shared imports before creating either map.
 setWorkerUrl(mapLibreWorkerUrl);

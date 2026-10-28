@@ -2,8 +2,8 @@
 
 import pytest
 from electricity_map_api.config import Settings
+from electricity_map_api.electricity import service
 from electricity_map_api.main import create_app
-from electricity_map_api.market import service
 from fastapi.testclient import TestClient
 
 RESPONSES = {
@@ -17,7 +17,17 @@ RESPONSES = {
     "/v1/market/communities/{marketer_code}": "CommunitySharesResponse",
     "/v1/distribution/provinces/{province_code}": "ProvincePresenceResponse",
     "/v1/distribution/provinces": "ProvincePresenceSummaryResponse",
+    "/v1/gas/distribution/provinces": "GasNetworkProvincesResponse",
+    "/v1/gas/distribution/provinces/{province_code}": "GasNetworkDistributorsResponse",
+    "/v1/gas/distribution/revisions": "GasNetworkRevisionsResponse",
 }
+RESPONSES.update(
+    {
+        path.replace("/v1/market", "/v1/electricity"): model
+        for path, model in list(RESPONSES.items())
+        if path.startswith("/v1/market")
+    }
+)
 
 
 def test_all_endpoints_publish_response_schemas_and_errors() -> None:
@@ -28,6 +38,7 @@ def test_all_endpoints_publish_response_schemas_and_errors() -> None:
     assert set(schema["paths"]) == set(RESPONSES)
     for path, model in RESPONSES.items():
         operation = schema["paths"][path]["get"]
+        assert bool(operation.get("deprecated")) == path.startswith("/v1/market")
         responses = operation["responses"]
         assert responses["200"]["content"]["application/json"]["schema"] == {"$ref": f"#/components/schemas/{model}"}
         assert schema["components"]["schemas"][model]["required"]
@@ -44,6 +55,9 @@ def test_all_endpoints_publish_response_schemas_and_errors() -> None:
             assert "503" in responses
         if path.startswith("/v1/distribution"):
             assert "503" in responses
+        if path.startswith("/v1/gas"):
+            assert "503" in responses
+            assert "404" in responses
         if path == "/v1/market/reference-marketers":
             assert "503" not in responses
         if path in ("/v1/market/shares", "/v1/market/communities/{marketer_code}"):
@@ -104,6 +118,29 @@ def test_openapi_describes_input_constraints_and_nested_nullable_fields() -> Non
     summary_count = schemas["ProvincePresenceSummaryItem"]["properties"]["documented_distributor_count"]
     assert "maximum" not in summary_count
     assert {"type": "null"} in schemas["DistributorPresence"]["properties"]["cor"]["anyOf"]
+
+
+def test_gas_network_lists_share_electricity_pagination_and_keep_distinct_contracts() -> None:
+    schema = create_app(Settings()).openapi()
+    market = schema["paths"]["/v1/market/shares"]["get"]
+    market_params = {item["name"]: item["schema"] for item in market["parameters"]}
+    for path in (
+        "/v1/gas/distribution/provinces",
+        "/v1/gas/distribution/provinces/{province_code}",
+        "/v1/gas/distribution/revisions",
+    ):
+        operation = schema["paths"][path]["get"]
+        parameters = {item["name"]: item["schema"] for item in operation["parameters"]}
+        for name in ("limit", "offset"):
+            for bound in ("minimum", "maximum", "default"):
+                assert parameters[name][bound] == market_params[name][bound]
+        model = operation["responses"]["200"]["content"]["application/json"]["schema"]["$ref"].split("/")[-1]
+        properties = schema["components"]["schemas"][model]["properties"]
+        assert properties["items"]["maxItems"] == 100
+        if "sector" in properties:
+            assert properties["sector"]["const"] == "gas"
+        assert properties["limit"]["maximum"] == 100
+        assert properties["offset"]["maximum"] == 10_000
 
 
 def test_bad_service_output_is_rejected_at_http_boundary(monkeypatch: pytest.MonkeyPatch) -> None:

@@ -3,7 +3,7 @@ import type { MapExplorer } from '../interfaces/map-explorer';
 import { LEVELS, LAYER_INFO } from '../lib/map-style';
 import { territoryOptions } from '../lib/territories';
 
-export function TerritoryFilters({ explorer }: { explorer: MapExplorer }) {
+export function TerritoryFilters({ explorer, context = 'Mercado: ámbito nacional o autonómico.' }: { explorer: MapExplorer; context?: string }) {
   const { catalog, catalogError, selection, mapStatus, changeTerritory } = explorer;
   return (
     <fieldset className="hierarchy" disabled={!catalog || mapStatus !== 'ready'}>
@@ -45,7 +45,7 @@ export function TerritoryFilters({ explorer }: { explorer: MapExplorer }) {
         ) : (
           <span>Busca una zona o selecciónala en el mapa.</span>
         )}
-        <span>Mercado: ámbito nacional o autonómico.</span>
+        <span>{context}</span>
       </div>
       {!catalog && (
         <p className="selector-status" role="status">

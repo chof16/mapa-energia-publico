@@ -1,7 +1,10 @@
 import { CanaryInset } from './CanaryInset';
+import { MapLegend } from './MapLegend';
 import type { MapExplorer } from '../interfaces/map-explorer';
-import { shareColor, missingColor } from '../../market/lib/market-style';
+import { shareColor, missingColor } from '../../electricity/lib/electricity-style';
 import { ProvinceEvidence } from '../../distribution/components/ProvinceEvidence';
+import { GasProvinceEvidence } from '../../gas/components/GasProvinceEvidence';
+import { GasNetworkLegend } from '../../gas/components/GasNetworkLegend';
 import { RetryButton } from '../../components/custom/RetryButton';
 import { oneDocumentedColor, multipleDocumentedColor, unknownProvinceColor } from '../../distribution/lib/distribution-style';
 
@@ -12,17 +15,18 @@ export function MapStage({ explorer }: { explorer: MapExplorer }) {
     statusMessage,
     sector,
     showOverview,
-    market,
+    electricity,
     provinceSummary,
     selection,
   } = explorer;
   return (
-    <div className="map-wrap">
+    <div className="map-wrap" data-evidence={sector === 'gas' || electricity.layer === 'distribution'}>
       <div ref={mapNode} className="map-canvas" />
-      {sector === 'electricidad' && market.layer === 'distribution' && (
+      {sector === 'electricidad' && electricity.layer === 'distribution' && (
         <ProvinceEvidence selection={selection} />
       )}
-      <div className="map-hint" hidden={sector === 'electricidad' && market.layer === 'distribution'}>
+      {sector === 'gas' && <GasProvinceEvidence explorer={explorer} />}
+      <div className="map-hint" hidden={sector === 'gas' || electricity.layer === 'distribution'}>
         <span className="hint-icon">↗</span> Usa la rueda o los botones para
         acercar
       </div>
@@ -33,12 +37,6 @@ export function MapStage({ explorer }: { explorer: MapExplorer }) {
       >
         ⌂ <span>Península y Baleares</span>
       </button>
-      {sector === 'gas' && (
-        <div className="map-availability" role="status">
-          <strong>Gas natural · próximamente</strong>
-          <span>Por ahora se muestran solo los límites administrativos.</span>
-        </div>
-      )}
       {mapStatus === 'missing' && (
         <div className="map-message">
           <span className="message-symbol">⌁</span>
@@ -59,13 +57,13 @@ export function MapStage({ explorer }: { explorer: MapExplorer }) {
         <CanaryInset
           onClick={() => showOverview(true)}
           items={
-            market.enabled && market.layer === 'market'
-              ? market.communities.data?.items
+            electricity.enabled && electricity.layer === 'market'
+              ? electricity.communities.data?.items
               : undefined
           }
         />
-        <div className="map-legend">
-          {market.enabled && market.layer === 'market' ? (
+        <MapLegend>
+          {sector === 'gas' ? <GasNetworkLegend query={explorer.gasProvinceSummary} /> : electricity.enabled && electricity.layer === 'market' ? (
             <>
               <strong>Cuota autonómica</strong>
               {[
@@ -92,7 +90,7 @@ export function MapStage({ explorer }: { explorer: MapExplorer }) {
                 Sin datos
               </span>
             </>
-          ) : sector === 'electricidad' && market.layer === 'distribution' ? (
+          ) : sector === 'electricidad' && electricity.layer === 'distribution' ? (
             <>
               <strong>Presencia documentada</strong>
               {provinceSummary.data && !provinceSummary.isError ? (
@@ -117,7 +115,7 @@ export function MapStage({ explorer }: { explorer: MapExplorer }) {
               <span>Límites actuales · <a href="https://www.ign.es/" target="_blank" rel="noreferrer">IGN</a>/<a href="https://www.cnig.es/" target="_blank" rel="noreferrer">CNIG</a></span>
             </>
           )}
-        </div>
+        </MapLegend>
       </div>
     </div>
   );

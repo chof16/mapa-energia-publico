@@ -8,7 +8,9 @@ import pytest
 from electricity_map_api.config import Settings
 from electricity_map_api.distribution.store import build_database, load_manifest
 from electricity_map_api.main import create_app
-from electricity_map_ingestion.market_store import initialize, write_quarter
+from electricity_map_ingestion import gas_distribution_store
+from electricity_map_ingestion.electricity_store import initialize, write_quarter
+from electricity_map_ingestion.gas_distribution import NetworkRow
 from fastapi.testclient import TestClient
 
 from scripts.build_combined_database import build
@@ -112,6 +114,14 @@ def test_combined_builder_and_exports_preserve_source_and_refuse_reinitializatio
                 ),
                 [("electricity", "2025T4", 1, "R1-001", "Red", "R2-001", "Com", "marketer", "2.0TD", "13", 1, 2)],
             )
+        with connection:
+            gas_distribution_store.initialize(connection)
+            for source_hash in ("a" * 64, "b" * 64):
+                gas_distribution_store.write_load(
+                    connection,
+                    [NetworkRow(4, "28", "Synthetic municipality", "Synthetic distributor SA", 42)],
+                    source_hash,
+                )
     original = source.read_bytes()
     result = build(source, database)
     assert result["market_rows"] == 1
@@ -125,6 +135,16 @@ def test_combined_builder_and_exports_preserve_source_and_refuse_reinitializatio
     assert not list(upload.parent.glob(".*.sqlite-*"))
     export = upload.with_suffix(".sql")
     assert prepare_sql_dump(upload, export, "combined")["statements"] > 0
+    # Replay our generated SQL to prove the export includes both energy sectors.
+    with closing(sqlite3.connect(":memory:")) as replay:
+        replay.executescript(export.read_text())
+        assert replay.execute("SELECT sector, supplies FROM market_rows_view").fetchall() == [("electricity", 1)]
+        assert replay.execute("SELECT COUNT(*) FROM gas_network_loads").fetchone() == (2,)
+        assert replay.execute("SELECT distributor_name, supply_points FROM gas_network_rows").fetchall() == [
+            ("Synthetic distributor SA", 42),
+            ("Synthetic distributor SA", 42),
+        ]
+        assert replay.execute("PRAGMA foreign_key_check").fetchone() is None
 
 
 def test_builder_rejects_non_sqlite_before_opening(tmp_path: Path) -> None:

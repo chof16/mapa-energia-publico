@@ -93,15 +93,15 @@ summary { cursor: pointer; }
 .selector-status { color: var(--muted); font-size: 13px; line-height: 1.5; }
 .choice-field { display: grid; align-content: start; gap: 6px; min-width: 0; font-size: 12px; font-weight: 500; }
 .choice-field > label { display: block; margin: 0; }
-.market-controls { display: flex; flex-wrap: wrap; gap: 10px 12px; width: 100%; min-width: 0; }
-.market-controls > div { min-width: 0; }
-.market-controls label, .comparison-controls > label { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 500; }
+.electricity-controls { display: flex; flex-wrap: wrap; gap: 10px 12px; width: 100%; min-width: 0; }
+.electricity-controls > div { min-width: 0; }
+.electricity-controls label, .comparison-controls > label { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 500; }
 .published-year-control { width: 110px; }
 .published-quarter-control { width: 180px; }
-.market-controls .marketer-control { flex: 1; min-width: 180px; }
-.market-control-status { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; flex-basis: 100%; color: var(--muted); font-size: 12px; line-height: 1.5; }
-.market-control-status:empty { display: none; }
-.market-control-hint { font-size: 11px; }
+.electricity-controls .marketer-control { flex: 1; min-width: 180px; }
+.electricity-control-status { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; flex-basis: 100%; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.electricity-control-status:empty { display: none; }
+.electricity-control-hint { font-size: 11px; }
 .app-shell button.retry-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 36px; max-width: 100%; padding: 4px; margin: 4px 0; border: 1px solid var(--control-line); border-radius: 8px; background: var(--selected); color: var(--green); font-size: 13px; font-weight: 600; vertical-align: middle; }
 .retry-button svg { flex-shrink: 0; }
 .app-shell button.retry-button:hover:not(:disabled) { background: var(--hover); border-color: var(--green); }

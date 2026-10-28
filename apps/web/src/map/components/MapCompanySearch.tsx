@@ -1,144 +1,65 @@
-import { useEffect, useRef, useState } from 'react';
+import { CompanyDetails } from '../../components/custom/CompanyDetails';
 import { SearchSelector } from '../../components/custom/SearchSelector';
 import { RetryButton } from '../../components/custom/RetryButton';
-import { MarketSummary } from '../../market/components/MarketSummary';
-import { MarketSource } from '../../market/components/MarketSource';
-import { formatQuarter } from '../../market/lib/market-format';
+import { ElectricitySummary } from '../../electricity/components/ElectricitySummary';
+import { ElectricitySource } from '../../electricity/components/ElectricitySource';
+import { formatQuarter } from '../../electricity/lib/electricity-format';
 import type { MapExplorer } from '../interfaces/map-explorer';
 
 export function MapCompanySearch({ explorer }: { explorer: MapExplorer }) {
-  const { market, community } = explorer;
-  const query = community ? market.areaMarketers : market.marketers;
-  const [detailsOpen, setDetailsOpen] = useState(false);
-  const panel = useRef<HTMLDivElement>(null);
-  const trigger = useRef<HTMLButtonElement>(null);
+  const { electricity, community } = explorer;
+  const query = community ? electricity.areaMarketers : electricity.marketers;
   const items = [...(query.data || [])].sort(
     (a, b) => b.supplies - a.supplies || a.marketer_code.localeCompare(b.marketer_code),
   );
-  const selected = items.find((item) => item.marketer_code === market.marketer);
-  const quarter = market.quarters.data?.find(
-    (item) => item.period === market.period,
+  const selected = items.find((item) => item.marketer_code === electricity.marketer);
+  const quarter = electricity.quarters.data?.find(
+    (item) => item.period === electricity.period,
   );
   const options = items.map((item) => ({
     code: item.marketer_code,
     title: item.observed_name || 'Sin nombre observado',
   }));
-  if (market.codeValid && !selected) {
+  if (electricity.codeValid && !selected) {
     options.unshift({
-      code: market.marketer,
+      code: electricity.marketer,
       title:
-        market.marketers.data?.find((item) => item.marketer_code === market.marketer)
+        electricity.marketers.data?.find((item) => item.marketer_code === electricity.marketer)
           ?.observed_name || 'Código seleccionado (sin nombre observado)',
     });
   }
 
-  useEffect(() => {
-    if (!detailsOpen) return;
-    function closeOutside(event: PointerEvent) {
-      if (
-        event.target instanceof Node &&
-        !panel.current?.contains(event.target) &&
-        !trigger.current?.contains(event.target)
-      ) setDetailsOpen(false);
-    }
-    document.addEventListener('pointerdown', closeOutside);
-    return () => document.removeEventListener('pointerdown', closeOutside);
-  }, [detailsOpen]);
-
-  return (
-    <div
-      className="marketer-control company-search"
-      onKeyDown={(event) => {
-        if (event.key === 'Escape' && !event.defaultPrevented && detailsOpen) {
-          event.preventDefault();
-          setDetailsOpen(false);
-          trigger.current?.focus();
-        }
-      }}
-    >
-      <label htmlFor="market-marketer">Comercializadora · código R2</label>
-      <SearchSelector
-        id="market-marketer"
-        label="Comercializadora · código R2"
-        value={market.marketer}
-        options={options}
-        disabled={!market.enabled || !market.published || !query.data}
-        placeholder="Buscar empresa y ver suministros"
-        describedBy="company-search-context"
+  return <CompanyDetails selectionKey={electricity.marketer}
+    enabled={electricity.enabled && electricity.published && !!quarter}
+    label={electricity.codeValid ? 'Cuotas y fuente' : 'Fuente CNMC'}
+    search={<>
+      <label htmlFor="electricity-marketer">Comercializadora · código R2</label>
+      <SearchSelector id="electricity-marketer" label="Comercializadora · código R2"
+        value={electricity.marketer} options={options}
+        disabled={!electricity.enabled || !electricity.published || !query.data}
+        placeholder="Buscar empresa y ver suministros" describedBy="company-search-context"
         optionDetail={(code) => {
           const item = items.find((entry) => entry.marketer_code === code);
-          return item
-            ? `${item.supplies.toLocaleString('es-ES')} suministros`
-            : 'Sin observaciones en este ámbito';
+          return item ? `${item.supplies.toLocaleString('es-ES')} suministros` : 'Sin observaciones en este ámbito';
         }}
-        onChange={(marketer) => {
-          setDetailsOpen(false);
-          market.change({ marketer, ...(marketer ? { layer: 'market' } : {}) });
-        }}
-      />
-      <div className="company-search-summary">
-        <span id="company-search-context">
-          {community?.title || 'España'} · {formatQuarter(market.period)}
-          {market.enabled && market.published && query.isSuccess && (
-            <strong>
-              {selected
-                ? `${selected.supplies.toLocaleString('es-ES')} suministros`
-                : market.marketer
-                  ? 'Sin observaciones en este ámbito'
-                  : `${items.length} comercializadoras · más suministros primero`}
-            </strong>
-          )}
-        </span>
-        {market.enabled && market.published && quarter && (
-          <button
-            ref={trigger}
-            type="button"
-            className="company-details-trigger"
-            aria-expanded={detailsOpen}
-            aria-controls="company-data"
-            onClick={() => setDetailsOpen((open) => !open)}
-          >
-            {market.codeValid ? 'Cuotas y fuente' : 'Fuente CNMC'} <span aria-hidden="true">{detailsOpen ? '⌃' : '⌄'}</span>
-          </button>
-        )}
-      </div>
-      {market.enabled && market.published && community && query.isPending && (
-        <p role="status" className="market-note">Cargando suministros de la comunidad…</p>
-      )}
-      {market.enabled && market.published && community && (query.isError || (query.isFetching && query.errorUpdatedAt > 0 && !query.data)) && (
-        <p role="alert" className="market-note">
-          No se pudieron cargar las comercializadoras de la zona.{' '}
-          <RetryButton loading={query.isFetching} onClick={() => void query.refetch()}>
-            Reintentar comercializadoras
-          </RetryButton>
-        </p>
-      )}
-      {detailsOpen && market.enabled && market.published && quarter && (
-        <div
-          ref={panel}
-          id="company-data"
-          className="company-data"
-          role="region"
-          aria-label="Datos de la comercializadora"
-        >
-          {market.codeValid ? (
-            <MarketSummary
-              market={market}
-              catalog={explorer.catalog}
-              community={community?.code || null}
-              onSelectCommunity={(code) => explorer.changeTerritory('ccaa', code)}
-            />
-          ) : (
-            <>
-              <p className="market-note">
-                Suministros de España o de toda la comunidad autónoma, también al
-                seleccionar una provincia o municipio. No indican cobertura de distribuidoras.
-              </p>
-              <MarketSource source={quarter} revision={quarter.metadata_modified} />
-            </>
-          )}
-        </div>
-      )}
-    </div>
-  );
+        onChange={(marketer) => electricity.change({ marketer, ...(marketer ? { layer: 'market' } : {}) })} />
+    </>}
+    summary={<>{community?.title || 'España'} · {formatQuarter(electricity.period)}
+      {electricity.enabled && electricity.published && query.isSuccess && <strong>
+        {selected ? `${selected.supplies.toLocaleString('es-ES')} suministros`
+          : electricity.marketer ? 'Sin observaciones en este ámbito' : `${items.length} comercializadoras · más suministros primero`}
+      </strong>}
+    </>}
+    status={<>
+      {electricity.enabled && electricity.published && community && query.isPending &&
+        <p role="status" className="electricity-note">Cargando suministros de la comunidad…</p>}
+      {electricity.enabled && electricity.published && community && (query.isError || (query.isFetching && query.errorUpdatedAt > 0 && !query.data)) &&
+        <p role="alert" className="electricity-note">No se pudieron cargar las comercializadoras de la zona.{' '}
+          <RetryButton loading={query.isFetching} onClick={() => void query.refetch()}>Reintentar comercializadoras</RetryButton></p>}
+    </>}>
+    {electricity.codeValid ? <ElectricitySummary electricity={electricity} catalog={explorer.catalog}
+      community={community?.code || null} onSelectCommunity={(code) => explorer.changeTerritory('ccaa', code)} />
+      : quarter && <><p className="electricity-note">Suministros de España o de toda la comunidad autónoma, también al seleccionar una provincia o municipio. No indican cobertura de distribuidoras.</p>
+        <ElectricitySource source={quarter} revision={quarter.metadata_modified} /></>}
+  </CompanyDetails>;
 }

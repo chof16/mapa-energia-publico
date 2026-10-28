@@ -1,4 +1,4 @@
-// Searchable name/code selector shared by geographic and market navigation.
+// Searchable name/code selector shared by geographic and sector navigation.
 import { useEffect, useRef, useState } from 'react';
 import type { KeyboardEvent } from 'react';
 import { filterOptions } from '../../lib/search-options';
@@ -51,6 +51,7 @@ export function SearchSelector({
   const [query, setQuery] = useState('');
   const [active, setActive] = useState<string | null>(null);
   const selected = options.find((option) => option.code === value);
+  const optionId = (code: string) => `${id}-opcion-${encodeURIComponent(code)}`;
   const results = filterOptions(options, editing ? query : '');
   const activeCode =
     results.find((option) => option.code === active)?.code ?? results[0]?.code;
@@ -145,7 +146,7 @@ export function SearchSelector({
           aria-describedby={describedBy}
           aria-activedescendant={
             open && activeCode !== undefined
-              ? `${id}-opcion-${activeCode}`
+              ? optionId(activeCode)
               : undefined
           }
           disabled={disabled}
@@ -212,7 +213,7 @@ export function SearchSelector({
           {results.map((option) => (
             <li
               key={option.code}
-              id={`${id}-opcion-${option.code}`}
+              id={optionId(option.code)}
               role="option"
               aria-selected={option.code === value}
               className={option.code === activeCode ? 'is-active' : ''}

@@ -7,7 +7,7 @@ export function TermsPage() {
       <h1>Términos y condiciones</h1>
       <p className="legal-lead">
         Red energía es un proyecto independiente de código abierto para explorar
-        información sobre el mercado eléctrico de España.
+        información sobre electricidad y gas en España.
       </p>
       <section>
         <h2>Independencia</h2>
@@ -33,6 +33,14 @@ export function TermsPage() {
           red. Los límites del mapa son una instantánea actual y las cuotas de mercado
           se muestran únicamente para el ámbito territorial disponible.
         </p>
+        <p>
+          La evidencia territorial de gas corresponde a junio de 2019 y a redes
+          de gas natural de presión menor o igual a 4 bar. No describe la red actual.
+          Los nombres del anexo no se equiparan automáticamente a empresas
+          actuales ni a grupos empresariales. Gas se limita a este mapa de
+          distribuidoras; las cuotas, la evolución y la tarifa regulada
+          disponibles en la web corresponden solo a electricidad.
+        </p>
       </section>
       <section>
         <h2>Fuentes y reutilización</h2>
@@ -53,6 +61,11 @@ export function TermsPage() {
           a su licencia. Esa licencia no se extiende automáticamente a los datos,
           documentos, cartografía o marcas de terceros. La evidencia de distribución
           conserva las condiciones de cada fuente.
+        </p>
+        <p>
+          Las condiciones de CNMC Data no se extienden al anexo
+          territorial de gas. La reutilización de este anexo sigue pendiente
+          de aclaración; no se ofrece la base combinada para redistribución.
         </p>
       </section>
       <section>

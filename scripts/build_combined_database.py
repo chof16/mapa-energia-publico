@@ -20,7 +20,9 @@ def build(market: Path, destination: Path) -> dict[str, object]:
     if market.resolve() == destination.resolve():
         raise ValueError("Market source and combined database must differ")
     if destination.exists():
-        raise ValueError("Combined database already exists; use refresh-cnmc-market or build-distribution-database")
+        raise ValueError(
+            "Combined database already exists; use refresh-cnmc-electricity or build-distribution-database"
+        )
     _inspect(market, "market")
     destination.parent.mkdir(parents=True, exist_ok=True)
 

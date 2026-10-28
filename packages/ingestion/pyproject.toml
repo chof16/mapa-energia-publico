@@ -5,8 +5,9 @@ requires-python = ">=3.12"
 dependencies = ["electricity-map-domain"]
 
 [project.scripts]
-ingest-cnmc-market = "electricity_map_ingestion.cnmc_market:main"
-refresh-cnmc-market = "electricity_map_ingestion.refresh_cnmc_market:main"
+ingest-cnmc-electricity = "electricity_map_ingestion.cnmc_electricity:main"
+refresh-cnmc-electricity = "electricity_map_ingestion.refresh_cnmc_electricity:main"
+ingest-gas-distribution = "electricity_map_ingestion.gas_distribution:main"
 
 [tool.uv.sources]
 electricity-map-domain = { workspace = true }

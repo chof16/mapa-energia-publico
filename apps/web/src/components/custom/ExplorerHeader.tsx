@@ -31,7 +31,7 @@ export function ExplorerHeader({
         >
           Mapa
         </Link>
-        <Link
+        {sector === 'electricidad' && <><Link
           to={explorationLink({ page: 'evolucion' })}
           aria-current={page === 'evolucion' ? 'page' : undefined}
         >
@@ -42,7 +42,7 @@ export function ExplorerHeader({
           aria-current={page === 'referencia' ? 'page' : undefined}
         >
           Tarifa regulada
-        </Link>
+        </Link></>}
       </nav>
       <nav className="sector-switch" aria-label="Sector energético">
         <Link
@@ -55,7 +55,7 @@ export function ExplorerHeader({
           to={explorationLink({ sector: 'gas' })}
           aria-current={sector === 'gas' ? 'true' : undefined}
         >
-          Gas <span className="sector-soon">Próximamente</span>
+          Gas
         </Link>
       </nav>
     </header>

@@ -1,7 +1,7 @@
 # Mapa de energía de España
 
-Mapa interactivo de distribuidoras eléctricas, cuotas autonómicas de
-comercializadoras y evolución del mercado con datos de fuentes oficiales.
+Mapa interactivo de distribuidoras de electricidad y gas con fuentes oficiales.
+Electricidad incluye además comercializadoras y evolución del mercado.
 Proyecto independiente: las fuentes citadas no avalan la aplicación.
 
 ## Funcionalidades
@@ -9,16 +9,34 @@ Proyecto independiente: las fuentes citadas no avalan la aplicación.
 - Navegación por comunidad, provincia y municipio, incluidas Canarias, Baleares,
   Ceuta y Melilla.
 - Presencia provincial documentada de distribuidoras, con fuentes y confianza.
-- Cuotas autonómicas, reproducción por trimestre y comparación de hasta cuatro
-  comercializadoras en gráficos o tablas.
-- Catálogo independiente de comercializadoras de referencia (tarifa regulada).
+- Capa de gas con evidencia provincial histórica de junio de 2019, procedente
+  de un anexo oficial de redes de presión ≤4 bar. No indica cobertura actual.
+- Electricidad: cuotas autonómicas, reproducción por trimestre y comparación
+  de hasta cuatro comercializadoras en gráficos o tablas.
+- Catálogo independiente de comercializadoras de referencia de electricidad en
+  la sección de tarifa regulada; no publica precios de tarifas.
+- En móvil, filtros, ficha de distribuidoras y leyenda plegables para dejar
+  espacio al mapa, con navegación táctil y acceso a Canarias.
 - API de lectura documentada en `/docs` y `/openapi.json`.
+- API eléctrica en `/v1/electricity`; `/v1/market` conserva compatibilidad con
+  clientes anteriores. El frontend usa la ruta eléctrica explícita.
+- Backend de gas en `/v1/gas/distribution`: provincias, distribuidoras observadas
+  y revisiones de la evidencia histórica del mapa.
 - Pie común con GitHub, declaración de independencia y páginas de cookies
   (`/cookies`) y términos y condiciones (`/terms`).
 
 La cobertura de distribuidoras es incompleta y no identifica la red de cada
 domicilio. Los límites administrativos son una instantánea actual. No hay
-cuotas municipales/provinciales, datos personales, ofertas comerciales ni gas.
+cuotas municipales/provinciales de comercializadoras, datos personales ni ofertas
+comerciales. El alcance y la preparación del backend de gas se detallan en la
+[guía de fuentes](docs/data-sources.md#gas-mapa-de-distribuidoras).
+
+Electricidad y gas comparten el mapa de `/`; `sector=gas` selecciona el mapa de
+distribuidoras de gas y `/gas` es un acceso alternativo. Evolución y tarifa regulada
+pertenecen a electricidad. Gas queda limitado a distribución; compras y ventas
+se tratarán en otra tarea. El anexo de redes no permite colorear municipios por
+código INE. Los enlaces antiguos de evolución o tarifa regulada con `sector=gas`
+redirigen al mapa de gas conservando la selección territorial.
 
 ## Arquitectura
 
@@ -27,7 +45,7 @@ cuotas municipales/provinciales, datos personales, ofertas comerciales ni gas.
 | `apps/web` | React, TypeScript, Vite y MapLibre |
 | `apps/api` | FastAPI, Pydantic y SQLAlchemy |
 | `packages/domain` | Reglas compartidas |
-| `packages/ingestion` | CNMC Data y refrescos locales |
+| `packages/ingestion` | CNMC Data de electricidad, refrescos locales e importación del anexo de redes de gas |
 | `packages/map_pipeline` | Cartografía IGN/INE y PMTiles |
 | `scripts` | Inicialización, migración y exportación de datos |
 
@@ -92,6 +110,10 @@ los comandos de [datos locales](docs/data-sources.md#preparar-datos-locales) y
 arrancar la API. Sin cartografía faltarán los límites y etiquetas propios; sin API
 o base de datos las consultas energéticas mostrarán errores.
 
+El mapa de gas requiere cargar su anexo explícitamente con `ingest-gas-distribution`
+en la misma base, siguiendo la [preparación de gas](docs/data-sources.md#gas-mapa-de-distribuidoras).
+La API no lo importa al arrancar ni lo actualiza automáticamente.
+
 Todavía no hay una descarga preparada de los dos archivos cartográficos. No se
 incluyen en Git; por ahora cada instalación debe generarlos o usar una copia de
 la misma generación, conservando su atribución.
@@ -114,7 +136,7 @@ sintéticos y no requieren cuentas de proveedores ni descargas reales.
 
 ### Caché local opcional con Redis
 
-La API puede compartir las respuestas de mercado y distribución mediante Redis.
+La API puede compartir las respuestas de electricidad, gas y distribución mediante Redis.
 Sin `MAPA_REDIS_URL`, consulta la base directamente. Para probar la caché con Docker:
 
 ```sh
@@ -221,9 +243,11 @@ para redistribución. La descarga cartográfica prevista es un recurso separado;
 ver [estado de las descargas](docs/data-sources.md#descargas-preparadas-estado-y-alcance).
 Consultar [fuentes y límites de reutilización](docs/data-sources.md).
 
-La referencia verificada previa a la publicación abarca 2011T1–2025T4 y
-48/52 provincias con evidencia positiva. Los refrescos programados siguen
-pendientes; arrancar la API no descarga ni actualiza datos automáticamente.
+La referencia verificada de electricidad abarca 2011T1–2025T4 y 48/52 provincias
+con evidencia positiva de distribución. Por separado, el anexo de gas de junio
+de 2019 documenta 48 provincias y 18 nombres de distribuidoras en 1.993 filas.
+Las provincias sin evidencia siguen siendo desconocidas. Los refrescos programados
+siguen pendientes; arrancar la API no descarga ni actualiza datos automáticamente.
 
 Para contribuir, seguir [CONTRIBUTING.md](CONTRIBUTING.md): crear un fork,
 trabajar en una rama y abrir una pull request hacia `main`. Las convenciones

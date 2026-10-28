@@ -1,9 +1,11 @@
 import { act, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { createMemoryRouter } from 'react-router';
+import { appRoutes } from '../app.router';
 import { territoryLabels } from '../test/fixtures/territory-labels';
 import { MapBoundary } from '../test/maplibre-boundary';
-import { marketResponse } from '../test/fixtures/market';
-import { choosePublished, network, mockProvinceResponse, provinceResponse, provinceSummaryResponse, renderExplorer as renderHome } from '../test/exploration-route-fixture';
+import { electricityResponse } from '../test/fixtures/electricity';
+import { choosePublished, network, mockProvinceResponse, provinceResponse, provinceSummaryResponse, renderRoute, renderExplorer as renderHome } from '../test/exploration-route-fixture';
 
 vi.mock('maplibre-gl', async () => {
   const { MapBoundary } = await import('../test/maplibre-boundary');
@@ -120,7 +122,7 @@ describe('documented distribution map route', () => {
         ? { ...provinceSummaryResponse, items: [{ province_code: province, documented_distributor_count: 7 }] }
         : config.url?.includes('/v1/distribution/')
           ? { ...provinceResponse, province_code: province, items }
-          : config.url?.includes('/v1/market/') ? marketResponse(config.url, config.params) : labels),
+          : config.url?.includes('/v1/electricity/') ? electricityResponse(config.url, config.params) : labels),
       status: 200, statusText: 'OK', headers: {}, config,
     }));
     const { router } = await renderHome(`/?province=${province}`);
@@ -166,8 +168,8 @@ describe('documented distribution map route', () => {
     network.mockImplementation(async (config) => ({
       data: JSON.stringify(config.url?.includes('/v1/distribution/')
         ? { ...provinceResponse, complete: invalid }
-        : config.url?.includes('/v1/market/')
-          ? marketResponse(config.url, config.params)
+        : config.url?.includes('/v1/electricity/')
+          ? electricityResponse(config.url, config.params)
           : territoryLabels),
       status: 200, statusText: 'OK', headers: {}, config,
     }));
@@ -180,9 +182,14 @@ describe('documented distribution map route', () => {
     expect(new URLSearchParams(router.state.location.search).get('province')).toBe('28');
   });
 
-  it('keeps gas pending and does not request electrical presence there', async () => {
+  it('uses the shared map for gas without requesting electrical presence', async () => {
     mockProvinceResponse();
-    await renderHome('/?sector=gas&province=28');
+    const router = createMemoryRouter(appRoutes, { initialEntries: ['/?sector=gas&province=28'] });
+    renderRoute(router);
+    expect(await screen.findByRole('heading', { name: 'Explorar zonas de gas' })).toBeVisible();
+    expect(router.state.location.pathname).toBe('/');
+    expect(router.state.location.search).toBe('?sector=gas&province=28');
+    expect(MapBoundary.instances).toHaveLength(2);
     expect(screen.queryByRole('complementary', { name: /Evidencia de distribuidoras/ })).not.toBeInTheDocument();
     expect(network.mock.calls.some(([config]) => config.url?.includes('/v1/distribution/'))).toBe(false);
   });

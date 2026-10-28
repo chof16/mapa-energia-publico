@@ -27,9 +27,9 @@ incluye solo suministros con comercializadora registrada. Los nombres se
 conservan por trimestre, sin inferir grupos ni fechas de alta/baja.
 
 Estos datos no prueban cobertura geográfica de distribuidoras. Los censos de
-la **sede** CNMC son una fuente diferente: no se incluyen copias ni derivados
-sin confirmación de reutilización. El censo de consumidores directos contiene
-también personas físicas y queda fuera del proyecto. SIPS no se utiliza.
+la **sede** CNMC son una fuente diferente y pueden contener personas físicas
+y direcciones privadas; no se importan ni publican en este proyecto.
+No se les asigna la licencia de CNMC Data. SIPS no se utiliza.
 
 ### Otras fuentes de la CNMC
 
@@ -44,6 +44,87 @@ revisión también afecta a los datos incluidos en JSON, catálogos y documentac
 del repositorio: excluir SQLite de Git no resuelve por sí solo la publicación
 de información procedente de esas fuentes. Una cuestión pendiente no equivale
 a una prohibición confirmada; debe resolverse antes de publicar el contenido afectado.
+
+## Gas: mapa de distribuidoras
+
+Gas se limita al mapa de presencia provincial de distribuidoras y a su procedencia
+histórica. La web utiliza el mismo mapa y selección territorial que electricidad
+en `/?sector=gas`; `/gas` es un acceso alternativo. Las estadísticas de
+comercializadoras, clientes, cuotas, energía, censos y tarifa regulada de gas quedan
+fuera del alcance actual. Compras y ventas se tratarán en una tarea posterior.
+
+La API de gas publica únicamente los tres endpoints de
+`/v1/gas/distribution` descritos abajo. No se mantienen modelos, tablas de creación,
+importadores ni refrescos de estadísticas comerciales o censos de gas.
+El módulo eléctrico usa `/v1/electricity`; `/v1/market` conserva compatibilidad
+para clientes antiguos. Su parámetro heredado `sector=gas` no consulta las
+tablas de redes ni equivale al mapa de distribuidoras.
+
+### Presencia provincial histórica
+
+El [expediente IS/DE/007/20](https://www.cnmc.es/expedientes/isde00720-0),
+publicado el 29/07/2020, incluye un
+[anexo de municipios con redes de distribución](https://www.cnmc.es/sites/default/files/3085926.xlsx).
+Aunque el informe corresponde al año 2019, el anexo declara **junio de 2019**
+y redes de gas natural de presión **menor o igual a 4 bar**. No representa la red
+actual ni todas las presiones, y no incluye GLP.
+
+La importación local comprobada conserva 1.993 filas fuente, 18 denominaciones
+observadas de distribuidoras y 48 provincias. La suma es 7.957.923 puntos de
+suministro: se contrastan los subtotales provinciales y autonómicos y el total
+nacional. Los subtotales se excluyen de las observaciones para no duplicarlos.
+Se conserva el identificador de fila original y se admiten observaciones repetidas.
+Las provincias `35`, `38`, `51` y `52` quedan sin evidencia en esta fuente;
+esto **no prueba ausencia de red**.
+
+El anexo no contiene códigos municipales INE. Se vinculan únicamente sus
+etiquetas provinciales mediante una correspondencia exacta revisada a códigos
+INE de dos cifras. Los nombres municipales permanecen como observaciones de
+fuente: no se hacen uniones aproximadas ni se colorean municipios. La API suma
+explícitamente los puntos por provincia y denominación observada, y cuenta filas
+fuente, no municipios únicos. No se equiparan denominaciones históricas con
+SIFCO, grupos actuales o comercializadoras. La presencia en parte de una provincia
+no delimita redes, acredita exclusividad ni comprueba suministro en un domicilio.
+
+| Endpoint | Contrato |
+| --- | --- |
+| `/v1/gas/distribution/provinces` | Provincias documentadas, número de denominaciones, filas y puntos de suministro |
+| `/v1/gas/distribution/provinces/{code}` | Distribuidoras observadas en la provincia; lista vacía e incompleta significa desconocido |
+| `/v1/gas/distribution/revisions` | Cargas conservadas, fecha del dato, publicación, hash y procedencia |
+
+Los tres aceptan `limit` (50 por defecto, máximo 100), `offset` (0–10.000) y
+`load_id`. La presencia usa la carga más reciente cuando falta el selector;
+`revisions` permite descubrir todas las cargas conservadas. Las respuestas de
+presencia declaran `sector=gas`, `scope=documented_provincial_presence` y
+`complete=false`. Los nombres y recuentos pertenecen al mes indicado en `source.period`.
+Los puntos de suministro describen las redes de las distribuidoras de esa fuente,
+no clientes ni cuotas de comercializadoras.
+
+```sh
+uv run --package electricity-map-ingestion ingest-gas-distribution --database datos/mapa-v2.sqlite
+uv run --all-packages python -m scripts.verify_gas_distribution --database datos/mapa-v2.sqlite
+```
+
+El primer comando reutiliza una descarga local o descarga el anexo a
+`datos/raw/gas-distribution/`, ignorado por Git. También acepta `--xlsx /ruta/anexo.xlsx`.
+Solo se admite el SHA-256 revisado
+`d9ea1fc4783c916a849c88271831cac41ab9ea192e274207ff56d9df99e3b87d`.
+Una revisión diferente exige revisar fuente y contrato. Se validan tamaño, firma
+ZIP, expansión, miembros, XML, hoja, dimensiones, cabeceras, tipos, campos y
+subtotales antes de archivar o escribir la base. No se ejecutan fórmulas ni macros.
+El DDL `sql/gas_distribution_v1.sql` se instala explícitamente en una transacción
+con la carga; no hay migración al iniciar la API. Las nuevas tablas
+`gas_network_loads` y `gas_network_rows` conservan revisiones y no modifican
+electricidad. No hay refresco automático del anexo.
+
+**Condiciones de reutilización pendientes de aclaración para publicar el conjunto.**
+El anexo pertenece a `www.cnmc.es`, no al portal CNMC Data; no se le asigna
+CC BY-SA. La procedencia expone `reuse_status=review_pending`. La importación y
+verificación local no autorizan redistribuir el archivo o una base completa;
+la fuente original y las bases permanecen fuera de Git. Tampoco se han copiado
+el mapa del comparador comercial ni inventarios de empresas con condiciones
+restrictivas. Quedan pendientes fuentes territoriales más recientes, cruces
+municipales verificables y la revisión de reutilización antes de publicar datos.
 
 ## Distribución provincial
 
@@ -87,8 +168,14 @@ PMTiles y etiquetas deben generarse y publicarse juntos.
 No es necesario descargar datos reales para ejecutar los tests. Para una
 instalación con datos, desde la raíz y tras instalar las dependencias:
 
+Los comandos de electricidad se llaman `ingest-cnmc-electricity` y
+`refresh-cnmc-electricity`; sustituyen a `ingest-cnmc-market` y
+`refresh-cnmc-market`. Para el mapa de gas se usa `ingest-gas-distribution`.
+Todos pertenecen al mismo paquete de ingestión y pueden escribir en la misma
+base de datos; el exportador general incluye todas sus tablas.
+
 ```sh
-uv run --package electricity-map-ingestion ingest-cnmc-market --database datos/mapa-v2.sqlite
+uv run --package electricity-map-ingestion ingest-cnmc-electricity --database datos/mapa-v2.sqlite
 uv run --package electricity-map-api build-distribution-database --database datos/mapa-v2.sqlite
 ```
 
@@ -98,13 +185,13 @@ de distribución localmente; no es una aprobación para redistribuir sus fuentes
 Para actualizar mercado sobre la misma SQLite:
 
 ```sh
-uv run --package electricity-map-ingestion refresh-cnmc-market --database datos/mapa-v2.sqlite
+uv run --package electricity-map-ingestion refresh-cnmc-electricity --database datos/mapa-v2.sqlite
 ```
 
 El refresco prepara solo trimestres nuevos/revisados y publica en una transacción
 WAL, conserva distribución y revierte el lote si falla. No elimina ni deduplica
 filas por aproximación. La API consulta vistas normalizadas `*_view`; el DDL
-se mantiene en `packages/ingestion/src/electricity_map_ingestion/sql/market_v2.sql`.
+se mantiene en `packages/ingestion/src/electricity_map_ingestion/sql/electricity_v2.sql`.
 
 ### Generar la cartografía local
 

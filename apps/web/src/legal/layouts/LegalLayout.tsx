@@ -20,7 +20,7 @@ export function LegalLayout() {
       >
         <Link className="legal-back" to="/">
           <span aria-hidden="true">←</span>
-          Back to map
+          Volver al mapa
         </Link>
         <Outlet />
       </main>

@@ -10,9 +10,9 @@ import pytest
 from electricity_map_api.cache import MAX_RESPONSE_BYTES, RedisResponseCache
 from electricity_map_api.config import Settings
 from electricity_map_api.distribution.store import build_database
+from electricity_map_api.electricity.schemas import QuartersResponse
 from electricity_map_api.main import create_app
-from electricity_map_api.market.schemas import QuartersResponse
-from electricity_map_ingestion.market_store import initialize, write_quarter
+from electricity_map_ingestion.electricity_store import initialize, write_quarter
 from fastapi.testclient import TestClient
 from redis.exceptions import ConnectionError
 from sqlalchemy import event
@@ -133,6 +133,23 @@ def test_errors_are_not_cached_and_cache_hits_still_consume_quota(cached_app):
     assert client.get("/v1/market/quarters").headers["x-cache"] == "MISS"
     assert client.get("/v1/market/quarters").headers["x-cache"] == "HIT"
     assert client.get("/v1/market/quarters").status_code == 429
+
+
+def test_electricity_aliases_share_cache_and_rate_limit(cached_app):
+    app, _ = cached_app
+    app.state.settings = replace(app.state.settings, development_mode=False, request_limit=2)
+    with TestClient(app) as client:
+        first = client.get("/v1/electricity/quarters")
+        assert first.headers["x-cache"] == "MISS"
+
+        @event.listens_for(app.state.database_engine, "connect")
+        def prohibit_sql(connection, record):
+            pytest.fail("Compatible aliases must share cached responses")
+
+        second = client.get("/v1/market/quarters")
+        assert second.headers["x-cache"] == "HIT"
+        assert first.json() == second.json()
+        assert client.get("/v1/electricity/quarters").status_code == 429
 
 
 def test_redis_outage_bypasses_cache_without_exposing_credentials(cached_app, monkeypatch, caplog):

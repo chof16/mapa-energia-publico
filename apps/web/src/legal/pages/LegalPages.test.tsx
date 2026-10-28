@@ -35,7 +35,7 @@ describe('project information and footer', () => {
     renderRoute(createMemoryRouter(appRoutes, { initialEntries: [entry] }));
     expect(screen.getByRole('heading', { level: 1, name: title })).toBeVisible();
     expect(screen.getByRole('main')).toHaveFocus();
-    expect(within(screen.getByRole('main')).getByRole('link', { name: 'Back to map' })).toHaveAttribute('href', '/');
+    expect(within(screen.getByRole('main')).getByRole('link', { name: 'Volver al mapa' })).toHaveAttribute('href', '/');
     expect(network).not.toHaveBeenCalled();
     expect(MapBoundary.instances).toHaveLength(0);
   });

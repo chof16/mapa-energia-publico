@@ -11,7 +11,7 @@ import tempfile
 from contextlib import closing
 from pathlib import Path
 
-from electricity_map_ingestion.market_store import initialize, write_quarter
+from electricity_map_ingestion.electricity_store import initialize, write_quarter
 
 from scripts.export_database import _inspect
 

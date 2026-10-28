@@ -4,8 +4,8 @@ import { describe, expect, it, vi } from 'vitest';
 import { appRoutes } from '../../../app.router';
 import { territoryLabels } from '../../../test/fixtures/territory-labels';
 import { MapBoundary } from '../../../test/maplibre-boundary';
-import { marketResponse, marketQuarters } from '../../../test/fixtures/market';
-import { choosePublished, openMarketData, selectedTerritory, network, renderRoute, renderExplorer as renderHome } from '../../../test/exploration-route-fixture';
+import { electricityResponse, electricityQuarters } from '../../../test/fixtures/electricity';
+import { choosePublished, openElectricityData, selectedTerritory, network, renderRoute, renderExplorer as renderHome } from '../../../test/exploration-route-fixture';
 
 vi.mock('maplibre-gl', async () => {
   const { MapBoundary } = await import('../../../test/maplibre-boundary');
@@ -116,13 +116,11 @@ describe('map home route', () => {
     expect(screen.queryByRole('heading', { name: 'Suministros · España' })).not.toBeInTheDocument();
     expect(router.state.location.pathname).toBe('/evolution');
     expect(router.state.location.search).toBe('');
-    fireEvent.click(screen.getByRole('link', { name: 'Gas Próximamente' }));
-    expect(
-      screen.getByRole('combobox', { name: 'Comercializadora · código R2' }),
-    ).toBeDisabled();
-    expect(
-      new URLSearchParams(router.state.location.search).get('sector'),
-    ).toBe('gas');
+    fireEvent.click(screen.getByRole('link', { name: 'Gas' }));
+    expect(screen.getByRole('heading', { name: 'Explorar zonas de gas' })).toBeVisible();
+    expect(screen.queryByRole('combobox', { name: 'Comercializadora · código R2' })).not.toBeInTheDocument();
+    expect(router.state.location.pathname).toBe('/');
+    expect(router.state.location.search).toBe('?sector=gas');
     await act(() => router.navigate(-1));
     expect(
       screen.queryByRole('combobox', { name: 'Trimestre publicado' }),
@@ -256,7 +254,7 @@ describe('map home route', () => {
     if (!click) throw new Error('Map click listener was not registered');
 
     choosePublished('Trimestre publicado', '2025T1');
-    fireEvent.click(screen.getByRole('link', { name: 'Gas Próximamente' }));
+    fireEvent.click(screen.getByRole('link', { name: 'Electricidad' }));
     await waitFor(() =>
       expect(mainMap!.getLayer('municipios-fill')).toBeDefined(),
     );
@@ -274,7 +272,7 @@ describe('map home route', () => {
     const params = new URLSearchParams(router.state.location.search);
     expect(params.get('municipality')).toBe('28005');
     expect(params.get('period')).toBe('2025T1');
-    expect(params.get('sector')).toBe('gas');
+    expect(params.get('sector')).toBe('electricity');
     expect(params.has('active_tab')).toBe(false);
     expect(params.get('campaign')).toBe('shared');
     expect(MapBoundary.instances).toHaveLength(2);
@@ -388,7 +386,7 @@ describe('map home route', () => {
     const { router } = await renderHome(
       '/?period=2025T4&marketer=R2-001&map_layer=market&campaign=shared',
     );
-    await openMarketData('shares');
+    await openElectricityData('shares');
     await screen.findByRole('list', { name: 'Cuotas autonómicas · 2025T4' });
     const timeline = screen.getByRole('group', { name: 'Línea temporal del mapa' });
     const slider = within(timeline).getByRole('slider', {
@@ -411,12 +409,12 @@ describe('map home route', () => {
 
   it('toggles company details from its source link and closes on outside click or Escape', async () => {
     await renderHome('/?period=2025T4&marketer=R2-001');
-    await openMarketData('shares');
+    await openElectricityData('shares');
     expect(screen.getByRole('region', { name: 'Datos de la comercializadora' })).toBeVisible();
     expect(screen.queryByRole('button', { name: 'Cerrar datos' })).not.toBeInTheDocument();
     fireEvent.pointerDown(screen.getByRole('heading', { name: 'Explorar zonas eléctricas' }));
     expect(screen.queryByRole('region', { name: 'Datos de la comercializadora' })).not.toBeInTheDocument();
-    await openMarketData('shares');
+    await openElectricityData('shares');
     fireEvent.keyDown(screen.getByRole('region', { name: 'Datos de la comercializadora' }), { key: 'Escape' });
     const trigger = screen.getByRole('button', { name: 'Cuotas y fuente' });
     expect(trigger).toHaveFocus();
@@ -430,9 +428,9 @@ describe('map home route', () => {
     const { router } = await renderHome(
       '/?period=2025T1&marketer=R2-001&map_layer=market',
     );
-    await openMarketData('shares');
+    await openElectricityData('shares');
     await screen.findByRole('list', { name: 'Cuotas autonómicas · 2025T1' });
-    await openMarketData('supplies');
+    await openElectricityData('supplies');
     await screen.findByRole('listbox', { name: 'Comercializadora · código R2' });
     choosePublished('Velocidad', '2×');
     expect(screen.getByRole('combobox', { name: 'Velocidad' })).toHaveValue('2×');
@@ -457,15 +455,15 @@ describe('map home route', () => {
           ? {
               sector: 'electricity',
               quarters: [
-                ...marketQuarters,
+                ...electricityQuarters,
                 ...['2024T2', '2024T1'].map((period) => ({
-                  ...marketQuarters[0],
+                  ...electricityQuarters[0],
                   period,
                 })),
               ],
             }
-          : config.url?.includes('/v1/market/')
-            ? marketResponse(config.url, config.params)
+          : config.url?.includes('/v1/electricity/')
+            ? electricityResponse(config.url, config.params)
             : territoryLabels,
       ),
       status: 200,
@@ -514,7 +512,7 @@ describe('map home route', () => {
     fireEvent.change(picker, { target: { value: 'R2-001' } });
     fireEvent.keyDown(picker, { key: 'Enter' });
     fireEvent.click(screen.getByRole('button', { name: 'Cuota comercializadora' }));
-    await openMarketData('shares');
+    await openElectricityData('shares');
     const table = await screen.findByRole('list', {
       name: 'Cuotas autonómicas · 2025T4',
     });
@@ -537,11 +535,11 @@ describe('map home route', () => {
     const main = MapBoundary.instances.find(
       (map) => map.options.cooperativeGestures,
     )!;
-    expect(main.layers.get('market-fill')).toMatchObject({
+    expect(main.layers.get('electricity-fill')).toMatchObject({
       'source-layer': 'ccaa',
     });
     expect(main.setPaintProperty).toHaveBeenLastCalledWith(
-      'market-fill',
+      'electricity-fill',
       'fill-color',
       [
         'match',
@@ -579,15 +577,12 @@ describe('map home route', () => {
             !config.params.community_code,
         ),
     ).toBe(true);
-    fireEvent.click(screen.getByRole('link', { name: 'Gas Próximamente' }));
-    expect(main.setLayoutProperty).toHaveBeenLastCalledWith(
-      'market-fill',
-      'visibility',
-      'none',
-    );
-    expect(screen.queryByRole('table')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('link', { name: 'Gas' }));
+    expect(router.state.location.pathname).toBe('/');
+    expect(router.state.location.search).toBe('?sector=gas');
+    expect(screen.getByRole('region', { name: 'Mapa de España' })).toBeInTheDocument();
     await act(() => router.navigate(-1));
-    await openMarketData('shares');
+    await openElectricityData('shares');
     expect(
       screen.getByRole('list', { name: 'Cuotas autonómicas · 2025T4' }),
     ).toBeVisible();
@@ -595,8 +590,8 @@ describe('map home route', () => {
 
   it('searches, sorts and expands community cards and synchronizes selection with the map and URL', async () => {
     network.mockImplementation(async (config) => {
-      const response = config.url?.includes('/v1/market/')
-        ? marketResponse(config.url, config.params)
+      const response = config.url?.includes('/v1/electricity/')
+        ? electricityResponse(config.url, config.params)
         : territoryLabels;
       return {
         data: JSON.stringify(
@@ -623,7 +618,7 @@ describe('map home route', () => {
     const { router } = await renderHome(
       '/?period=2025T4&marketer=R2-001&campaign=shared',
     );
-    await openMarketData('shares');
+    await openElectricityData('shares');
     const list = await screen.findByRole('list', {
       name: 'Cuotas autonómicas · 2025T4',
     });
@@ -679,8 +674,8 @@ describe('map home route', () => {
       supplies: 100 - index,
     }));
     network.mockImplementation(async (config) => {
-      const response = config.url?.includes('/v1/market/')
-        ? marketResponse(config.url, config.params)
+      const response = config.url?.includes('/v1/electricity/')
+        ? electricityResponse(config.url, config.params)
         : territoryLabels;
       return {
         data: JSON.stringify(
@@ -700,7 +695,7 @@ describe('map home route', () => {
     const { router } = await renderHome(
       '/?period=2025T1&autonomous_community=13&campaign=shared',
     );
-    await openMarketData();
+    await openElectricityData();
     const list = await screen.findByRole('listbox', {
       name: 'Comercializadora · código R2',
     });
@@ -745,18 +740,18 @@ describe('map home route', () => {
       screen.getByRole('button', { name: 'Explorar zonas' }),
     ).toHaveAttribute('aria-pressed', 'true');
     expect(main.setLayoutProperty).toHaveBeenLastCalledWith(
-      'market-fill',
+      'electricity-fill',
       'visibility',
       'none',
     );
-    await openMarketData();
+    await openElectricityData();
     const table = await screen.findByRole('listbox', {
       name: 'Comercializadora · código R2',
     });
     expect(table).toHaveTextContent('R2-001');
     expect(network).toHaveBeenCalledWith(
       expect.objectContaining({
-        url: '/v1/market/shares',
+        url: '/v1/electricity/shares',
         params: {
           sector: 'electricity',
           period: '2025T1',
@@ -775,14 +770,14 @@ describe('map home route', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Cuota comercializadora' }));
     await waitFor(() =>
       expect(main.setLayoutProperty).toHaveBeenLastCalledWith(
-        'market-fill',
+        'electricity-fill',
         'visibility',
         'visible',
       ),
     );
     await act(() => router.navigate(-1));
     expect(main.setLayoutProperty).toHaveBeenLastCalledWith(
-      'market-fill',
+      'electricity-fill',
       'visibility',
       'none',
     );

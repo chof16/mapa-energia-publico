@@ -1,54 +1,57 @@
-import { useRef, useState } from 'react';
-import { MarketControls } from '../../market/components/MarketControls';
-import { formatQuarter } from '../../market/lib/market-format';
+import { useEffect, useRef, useState } from 'react';
+import { useCompactMap } from '../hooks/useCompactMap';
+import { ElectricityControls } from '../../electricity/components/ElectricityControls';
+import { formatQuarter } from '../../electricity/lib/electricity-format';
 import type { MapExplorer } from '../interfaces/map-explorer';
 import { PeriodTimeline } from './PeriodTimeline';
 import { TerritoryFilters } from './TerritoryFilters';
 import { MapCompanySearch } from './MapCompanySearch';
+import { formatNetworkPeriod } from '../../gas/lib/distribution-format';
 
 export function MapToolbar({ explorer }: { explorer: MapExplorer }) {
-  const { sector, market } = explorer;
+  const { sector, electricity } = explorer;
   const [filtersOpen, setFiltersOpen] = useState(
     () => window.innerWidth >= 1100 && window.innerHeight > 600,
   );
   const filterToggle = useRef<HTMLButtonElement>(null);
   const [playing, setPlaying] = useState(false);
+  const compact = useCompactMap(1099);
+  useEffect(() => {
+    if (compact) { setFiltersOpen(false); setPlaying(false); }
+  }, [compact]);
   return (
-    <div className={`map-toolbar${filtersOpen ? '' : ' map-filters-collapsed'}`}>
+    <div className={`map-toolbar${filtersOpen ? '' : ' map-filters-collapsed'}`} data-sector={sector}>
       <div className="toolbar-title">
         <h1>
-          {market.layer === 'market'
+          {sector === 'electricidad' && electricity.layer === 'market'
             ? 'Cuota de una comercializadora'
-            : 'Explorar zonas eléctricas'}
+            : sector === 'gas' ? 'Explorar zonas de gas' : 'Explorar zonas eléctricas'}
         </h1>
         <p id="estado-periodo">
-          {sector === 'gas'
-            ? 'Gas: datos y periodo pendientes'
-            : market.layer === 'market'
+          {sector === 'electricidad' && electricity.layer === 'market'
               ? 'Porcentaje de suministros por comunidad autónoma · límites actuales'
               : 'Límites actuales · presencias documentadas al elegir provincia'}
         </p>
       </div>
-      <div className="map-toolbar-actions">
+      {sector === 'electricidad' && <div className="map-toolbar-actions">
         <div className="map-layer-switch" aria-label="Vista del mapa">
           <button
-            aria-pressed={market.layer === 'distribution'}
+            aria-pressed={electricity.layer === 'distribution'}
             onClick={() => {
               setPlaying(false);
-              market.change({ layer: 'distribution' });
+              electricity.change({ layer: 'distribution' });
             }}
           >
             Explorar zonas
           </button>
           <button
-            disabled={sector === 'gas'}
-            aria-pressed={market.layer === 'market'}
-            onClick={() => market.change({ layer: 'market' })}
+            aria-pressed={electricity.layer === 'market'}
+            onClick={() => electricity.change({ layer: 'market' })}
           >
             Cuota comercializadora
           </button>
         </div>
-      </div>
+      </div>}
       <button
         type="button"
         ref={filterToggle}
@@ -62,11 +65,11 @@ export function MapToolbar({ explorer }: { explorer: MapExplorer }) {
       >
         <span>{filtersOpen ? 'Cerrar filtros' : 'Filtros'}</span>
         <span>
-          {market.quarters.isError || market.marketers.isError
+          {sector === 'gas'
+            ? `${explorer.current?.title || 'España'}${explorer.gasProvinceSummary.data ? ` · ${formatNetworkPeriod(explorer.gasProvinceSummary.data.source.period)}` : ''}`
+            : electricity.quarters.isError || electricity.marketers.isError
             ? 'Revisar carga de datos'
-            : sector === 'gas'
-              ? 'Gas pendiente'
-              : `${explorer.current?.title || 'España'} · ${formatQuarter(market.period)}${market.marketer ? ` · ${market.marketer}` : ''}`}
+            : `${explorer.current?.title || 'España'} · ${formatQuarter(electricity.period)}${electricity.marketer ? ` · ${electricity.marketer}` : ''}`}
         </span>
         <span aria-hidden="true">{filtersOpen ? '⌃' : '⌄'}</span>
       </button>
@@ -84,12 +87,12 @@ export function MapToolbar({ explorer }: { explorer: MapExplorer }) {
           }
         }}
       >
-        <MarketControls
-          market={market}
+        {sector === 'electricidad' && <ElectricityControls
+          electricity={electricity}
           onPeriodChange={() => setPlaying(false)}
           companySearch={<MapCompanySearch explorer={explorer} />}
-        />
-        <TerritoryFilters explorer={explorer} />
+        />}
+        <TerritoryFilters explorer={explorer} context={sector === 'gas' ? 'Evidencia provincial histórica; no acredita cobertura municipal ni la red actual.' : undefined} />
         <button
           type="button"
           className="map-filters-done"
@@ -101,8 +104,16 @@ export function MapToolbar({ explorer }: { explorer: MapExplorer }) {
           Ver mapa
         </button>
       </div>
-      {sector === 'electricidad' && market.layer === 'market' && (
-        <PeriodTimeline market={market} playing={playing} setPlaying={setPlaying} />
+      {sector === 'electricidad' && electricity.layer === 'market' && (
+        <PeriodTimeline playing={playing} setPlaying={setPlaying}
+          periods={[...(electricity.quarters.data || [])].reverse().map((item) => item.period)}
+          period={electricity.period} published={electricity.published}
+          available={electricity.enabled && electricity.codeValid && electricity.published}
+          ready={electricity.communities.isSuccess && electricity.marketers.isSuccess && (!electricity.community || electricity.areaMarketers.isSuccess)}
+          loadError={electricity.communities.isError || electricity.marketers.isError || (!!electricity.community && electricity.areaMarketers.isError)}
+          contextKey={`${electricity.marketer}:${electricity.community}`}
+          preloadPeriod={electricity.preloadPeriod}
+          changePeriod={(period, replace) => electricity.change({ period }, { replace })} />
       )}
     </div>
   );
