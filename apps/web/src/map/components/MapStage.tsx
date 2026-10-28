@@ -20,6 +20,7 @@ export function MapStage({ explorer }: { explorer: MapExplorer }) {
     selection,
   } = explorer;
   return (
+    <>
     <div className="map-wrap" data-evidence={sector === 'gas' || electricity.layer === 'distribution'}>
       <div ref={mapNode} className="map-canvas" />
       {sector === 'electricidad' && electricity.layer === 'distribution' && (
@@ -62,7 +63,9 @@ export function MapStage({ explorer }: { explorer: MapExplorer }) {
               : undefined
           }
         />
-        <MapLegend>
+      </div>
+    </div>
+    <MapLegend>
           {sector === 'gas' ? <GasNetworkLegend query={explorer.gasProvinceSummary} /> : electricity.enabled && electricity.layer === 'market' ? (
             <>
               <strong>Cuota autonómica</strong>
@@ -115,8 +118,7 @@ export function MapStage({ explorer }: { explorer: MapExplorer }) {
               <span>Límites actuales · <a href="https://www.ign.es/" target="_blank" rel="noreferrer">IGN</a>/<a href="https://www.cnig.es/" target="_blank" rel="noreferrer">CNIG</a></span>
             </>
           )}
-        </MapLegend>
-      </div>
-    </div>
+    </MapLegend>
+    </>
   );
 }
