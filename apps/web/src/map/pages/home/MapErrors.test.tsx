@@ -153,7 +153,7 @@ describe('map loading errors', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Reintentar cuotas' }));
     await screen.findByRole('list', { name: 'Cuotas autonómicas · 2025T4' });
     fireEvent.click(
-      screen.getByRole('link', { name: 'Evolución de comercializadoras' }),
+      screen.getByRole('link', { name: 'Evolución' }),
     );
     await waitFor(() => expect(
       screen.getByRole('combobox', { name: 'Comercializadora · código R2' }),

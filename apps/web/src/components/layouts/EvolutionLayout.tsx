@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router';
-import { ExplorerHeader } from '../../components/custom/ExplorerHeader';
-import { SiteFooter } from '../../components/custom/SiteFooter';
+import { ExplorerHeader } from '../custom/ExplorerHeader';
+import { SiteFooter } from '../custom/SiteFooter';
 import { useSelectionUrl } from '../../map/hooks/useSelectionUrl';
 
 export function EvolutionLayout() {

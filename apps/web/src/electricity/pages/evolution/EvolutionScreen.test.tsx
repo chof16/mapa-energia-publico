@@ -53,8 +53,15 @@ describe('evolution route', () => {
     const results = document.querySelector('.evolution-results') as HTMLElement;
     expect(results).toContainElement(screen.getByRole('group', { name: 'Dato de evolución' }));
     expect(results).toContainElement(screen.getByRole('group', { name: 'Presentación de la evolución' }));
+    for (const name of ['Gráfico', 'Tabla']) {
+      const button = screen.getByRole('button', { name });
+      expect(button.textContent).toBe('');
+      expect(button.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
+    }
+    expect(screen.getByRole('button', { name: 'Gráfico' })).toHaveAttribute('aria-pressed', 'true');
     expect(screen.queryByRole('table')).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Tabla' }));
+    expect(screen.getByRole('button', { name: 'Tabla' })).toHaveAttribute('aria-pressed', 'true');
     const table = await screen.findByRole('table', {
       name: 'Suministros de Comercializadora de prueba · R2-001 · Comunidad de Madrid',
     });

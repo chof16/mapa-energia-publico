@@ -10,7 +10,8 @@ import { useSearchParams } from 'react-router';
 import { useEvolutionFilters } from '../../hooks/useEvolutionFilters';
 import { EvolutionFilters } from './ui/EvolutionFilters';
 import { ComparisonEvolution } from './ui/ComparisonEvolution';
-import { useChartDimensions } from '../../hooks/useChartDimensions';
+import { useChartDimensions } from '../../../components/custom/useChartDimensions';
+import { EvolutionDisplayControls } from '../../../components/custom/EvolutionDisplayControls';
 
 export function EvolutionPage({
   electricity,
@@ -113,21 +114,11 @@ export function EvolutionPage({
                 Cuota
               </button>
             </div>
-            <div className="evolution-context" role="group" aria-label="Presentación de la evolución">
-              {(['chart', 'table'] as const).map((value) => (
-                <button
-                  key={value}
-                  aria-pressed={view === value}
-                  onClick={() => {
-                    const next = new URLSearchParams(params);
-                    next.set('display', value);
-                    setParams(next);
-                  }}
-                >
-                  {value === 'chart' ? 'Gráfico' : 'Tabla'}
-                </button>
-              ))}
-            </div>
+            <EvolutionDisplayControls value={view} onChange={(value) => {
+              const next = new URLSearchParams(params);
+              next.set('display', value);
+              setParams(next);
+            }} />
           </div>
         )}
         {!electricity.enabled && (

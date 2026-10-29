@@ -95,7 +95,7 @@ def test_gas_exposes_only_distributor_map_contracts(network_database):
         assert "gas_api" not in metadata
     from electricity_map_api.models import Base
 
-    assert {name for name in Base.metadata.tables if name.startswith("gas_")} == {
+    assert {name for name in Base.metadata.tables if name.startswith("gas_network_")} == {
         "gas_network_loads",
         "gas_network_rows",
     }

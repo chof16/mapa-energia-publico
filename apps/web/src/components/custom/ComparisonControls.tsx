@@ -2,9 +2,10 @@ import { SearchSelector } from './SearchSelector';
 import type { SearchOption } from '../../interfaces/search-option';
 import { useState } from 'react';
 
-export function ComparisonControls({ options, selected, disabled, onChange, labelFor, showCode = true }: {
+export function ComparisonControls({ options, selected, disabled, onChange, labelFor, showCode = true, optionDetail }: {
   options: SearchOption[]; selected: string[]; disabled: boolean;
   onChange: (selected: string[]) => void; labelFor: (code: string) => string; showCode?: boolean;
+  optionDetail?: (code: string) => string;
 }) {
   const [expanded, setExpanded] = useState(false);
   return (
@@ -19,6 +20,7 @@ export function ComparisonControls({ options, selected, disabled, onChange, labe
         options={options}
         disabled={disabled || selected.length >= 3}
         showCode={showCode}
+        optionDetail={optionDetail}
         placeholder={showCode ? "Buscar empresa por nombre o código" : "Buscar comercializadora"}
         onChange={(code) => {
           if (code) onChange([...selected, code]);

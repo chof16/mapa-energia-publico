@@ -37,17 +37,20 @@ export function TermsPage() {
           La evidencia territorial de gas corresponde a junio de 2019 y a redes
           de gas natural de presión menor o igual a 4 bar. No describe la red actual.
           Los nombres del anexo no se equiparan automáticamente a empresas
-          actuales ni a grupos empresariales. Gas se limita a este mapa de
-          distribuidoras; las cuotas, la evolución y la tarifa regulada
-          disponibles en la web corresponden solo a electricidad.
+          actuales ni a grupos empresariales. La evolución minorista de gas es
+          independiente del mapa: publica solo tablas revisadas y conserva los
+          periodos pendientes como huecos. Las correspondencias revisadas permiten
+          seguir una comercializadora entre informes, sin unir empresas distintas
+          ni inferir comparabilidad geográfica. El catálogo CUR de gas conserva
+          evidencia fechada de la tarifa regulada, sin precios ni fechas legales de alta.
         </p>
       </section>
       <section>
         <h2>Fuentes y reutilización</h2>
         <p>
           Cada conjunto conserva sus fuentes, fechas y condiciones de reutilización.
-          Origen de los datos de mercado: Comisión Nacional de los Mercados y la
-          Competencia. Sus derivados mantienen la licencia CC BY-SA 4.0 y deben
+          Origen de las estadísticas eléctricas de CNMC Data: Comisión Nacional
+          de los Mercados y la Competencia. Sus derivados mantienen la licencia CC BY-SA 4.0 y deben
           respetar las{' '}
           <a href="https://data.cnmc.es/condiciones-de-uso" target="_blank" rel="noreferrer">
             condiciones de CNMC Data
@@ -63,8 +66,8 @@ export function TermsPage() {
           conserva las condiciones de cada fuente.
         </p>
         <p>
-          Las condiciones de CNMC Data no se extienden al anexo
-          territorial de gas. La reutilización de este anexo sigue pendiente
+          Las condiciones de CNMC Data no se extienden al anexo territorial,
+          los informes minoristas o el catálogo CUR de gas. Su reutilización sigue pendiente
           de aclaración; no se ofrece la base combinada para redistribución.
         </p>
       </section>

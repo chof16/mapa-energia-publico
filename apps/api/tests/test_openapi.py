@@ -20,6 +20,11 @@ RESPONSES = {
     "/v1/gas/distribution/provinces": "GasNetworkProvincesResponse",
     "/v1/gas/distribution/provinces/{province_code}": "GasNetworkDistributorsResponse",
     "/v1/gas/distribution/revisions": "GasNetworkRevisionsResponse",
+    "/v1/gas/retail/periods": "GasRetailPeriodsResponse",
+    "/v1/gas/retail/marketers": "GasRetailMarketersResponse",
+    "/v1/gas/retail/series/{marketer_id}": "GasRetailSeriesResponse",
+    "/v1/gas/retail/revisions": "GasRetailRevisionsResponse",
+    "/v1/gas/reference-marketers": "GasReferenceMarketersResponse",
 }
 RESPONSES.update(
     {

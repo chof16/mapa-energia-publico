@@ -3,6 +3,8 @@ export function ChartAxes({
   max,
   share = false,
   left = 65,
+  right = 45,
+  bottom = 75,
   width,
   height,
   x,
@@ -15,6 +17,8 @@ export function ChartAxes({
   max: number;
   share?: boolean;
   left?: number;
+  right?: number;
+  bottom?: number;
   width: number;
   height: number;
   x: (period: string) => number;
@@ -53,7 +57,7 @@ export function ChartAxes({
         <g key={value}>
           <line
             x1={left}
-            x2={width - 45}
+            x2={width - right}
             y1={y(value)}
             y2={y(value)}
             stroke="#dce4ec"
@@ -65,7 +69,7 @@ export function ChartAxes({
           </text>
         </g>
       ))}
-      <line x1={left} x2={width - 45} y1={height - 75} y2={height - 75} stroke="#819bb3" />
+      <line x1={left} x2={width - right} y1={height - bottom} y2={height - bottom} stroke="#819bb3" />
       {ticks.map((period, index) => (
         <g
           key={period}
@@ -78,13 +82,13 @@ export function ChartAxes({
           <line
             x1={x(period)}
             x2={x(period)}
-            y1={height - 75}
-            y2={height - 69}
+            y1={height - bottom}
+            y2={height - bottom + 6}
             stroke="#819bb3"
           />
           <text
             x={x(period)}
-            y={height - 50}
+            y={height - bottom + 25}
             textAnchor={
               index === 0
                 ? 'start'
@@ -98,8 +102,8 @@ export function ChartAxes({
         </g>
       ))}
       <text
-        x={(left + width - 45) / 2}
-        y={height - 15}
+        x={(left + width - right) / 2}
+        y={height - Math.min(15, bottom - 42)}
         textAnchor="middle"
         className="chart-axis-title"
       >

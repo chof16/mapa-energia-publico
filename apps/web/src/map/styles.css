@@ -28,7 +28,6 @@
 
 /* Search results and selected-company data share the company field's width. */
 .company-search { position: relative; }
-.selector-option-detail { grid-column: 1 / -1; color: var(--muted); font-size: 12px; font-weight: 400; font-variant-numeric: tabular-nums; }
 .company-search .selector-options [role='option'] { gap: 4px 10px; }
 .company-search-summary { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 4px 12px; margin-top: 7px; color: var(--muted); font-size: 11px; line-height: 1.5; }
 .company-search-summary > span { flex: 1; min-width: 0; }

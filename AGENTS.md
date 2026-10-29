@@ -4,10 +4,17 @@
 
 A public map of Spain, including the islands, Ceuta and Melilla, for exploring
 electricity and gas distributors through a shared map UI. Electricity also has
-retailer statistics, evolution and reference-retailer guidance. Gas is limited
-to historical distributor network evidence under `/v1/gas/distribution`.
-Gas retailer statistics, client counts, shares, censuses and regulated suppliers
-are out of scope. Gas purchases and sales are deferred to a separate task.
+retailer statistics, evolution and reference-retailer guidance. Gas currently
+exposes historical distributor network evidence under `/v1/gas/distribution`.
+A separate gas retail data preparation workflow covers monthly clients and
+sales, independent quarterly audits for 2003T4–2026T1, and an independently
+sourced gas CUR catalogue. Its private evidence is not fully audited or cleared
+for redistribution. The separate `/v1/gas/retail` backend serves reviewed-only
+values with audit coverage, and `/v1/gas/reference-marketers` serves dated gas
+CUR evidence. The web also exposes gas evolution and the independent CUR catalogue
+through the shared evolution and regulated-tariff layouts; do not treat
+partial extraction as reviewed coverage. Gas purchases and
+electronic-office censuses remain out of scope.
 Prices, offers, personal data and SIPS are out of scope.
 
 ## Working agreement
@@ -33,7 +40,7 @@ Prices, offers, personal data and SIPS are out of scope.
 - `apps/web`: React, Vite, strict TypeScript and MapLibre.
 - `apps/api`: FastAPI, SQLAlchemy and Pydantic DTOs organized by feature.
 - `packages/domain`: rules independent of FastAPI and external sources.
-- `packages/ingestion`: electricity CNMC Data ingestion/refresh and gas network annex import.
+- `packages/ingestion`: electricity CNMC Data ingestion/refresh, gas network annex import and gas retail evidence import.
 - `packages/map_pipeline`: cartographic preparation and PMTiles.
 - `scripts`: database initialization, migration and export.
 - `docs`: operating instructions and data rules.
@@ -74,9 +81,48 @@ Do not create empty directories. Components and hooks use `.tsx`; utilities
 without JSX use `.ts`.
 Electricity and gas must share the same map screen, territorial controls, panels
 and interaction patterns. Reuse common UI with sector-specific data adapters;
-do not create a separate gas dashboard or a different layout. Gas exposes only
-distributor presence and its source, with no retailer, evolution or regulated-tariff
-controls. Keep source scope and dates explicit without inventing geographic coverage.
+do not create a separate gas dashboard or a different layout. The gas map exposes
+only distributor presence and its source, without retailer or statistical map controls.
+Gas evolution and CUR use the shared navigation and layouts, with sector-specific
+actions, hooks, validators and types. Reuse the evolution chart presentation;
+preserve electricity supplies behavior. Gas defaults to clients and whole_market,
+supports sales in MWh, absolute/share, chart/table and up to four API retailer IDs.
+Keep series filters in useSearchParams and pass validated HTTP params through
+feature actions, as in Teslo Shop. Gas uses the same searchable company and
+comparison dropdowns as electricity, without a separate search form or visible
+catalogue pagination. Load the company catalogue with API limit 100; follow
+bounded, revision-pinned pages only if needed to keep that dropdown complete.
+Keep source scope and dates explicit without inventing geographic coverage.
+Only reviewed exact or zero values become chart points. Bounded values remain
+exclusive bounds in tables and annotations; missing or unreviewed periods stay gaps.
+Use the API's canonical company ID and company_name for selection. One company
+selection must join its reviewed history across documents. Source-local observation
+IDs are provenance, never public company options. Do not build document-based
+dropdown labels. source_id identifies provenance, never a replacement company identity.
+The API paginates unique companies before limit/offset; do not deduplicate names
+in the browser or infer merges. Preserve separate retailers, groups and pending
+identity changes. Connect only consecutive exact/zero reviewed points of the same
+company, metric and scope; keep missing/unreviewed/bounded points as breaks.
+Version retail query keys when selection contracts change so HMR cannot retain
+document-based company catalogues. Reject obsolete gas-cnmc-* selections instead
+of inferring a replacement company. Refresh the latest revision automatically;
+preserve and label explicit URL revision pins. Keep the gas evolution page compact:
+no manual refresh control, repeated bounded-value paragraphs, or separate reading
+and audit panels. Preserve bounded values, source issues and PDF links in the table
+and per-quarter provenance. Gas chart sizing must be independent of scroll position and
+tooltip renders; preserve the electricity sizing policy when sharing the hook.
+On mobile gas evolution, keep the scope and quarter filters before the results,
+with the quarter bounds side by side. Chart/table icon buttons retain accessible
+names, keyboard operation and pressed state.
+Anchor gas point details beside the active point and clamp them inside the plot.
+Use SVG descriptions rather than native titles to avoid duplicate hover tooltips.
+Gas company selector explanations are dated editorial context keyed by exact API
+IDs. Keep canonical labels and selections unchanged, cite official evidence in
+selected-company details, and never use those notes to merge histories or infer
+historical customer segments or a legal merger from a brand change.
+Never reuse electricity R2 IDs or infer national historical comparability. Keep the geography caveat visible,
+quarter PDF provenance accessible, and source-defined monthly names and units intact.
+CUR observations preserve dated variants, without prices, identity joins or legal start dates.
 On compact map screens, filters, distributor details and the legend start collapsed
 and open on demand. Preserve accessible toggles, Escape-to-close behavior for details
 and legend, the Canary Islands control, and direct touch panning. Keep this behavior
@@ -84,10 +130,11 @@ shared by both sectors, including when resizing or rotating the viewport.
 
 ## Contracts
 
-- Gas exposes only `/v1/gas/distribution/provinces`,
+- Gas network presence exposes `/v1/gas/distribution/provinces`,
   `/v1/gas/distribution/provinces/{province_code}` and
   `/v1/gas/distribution/revisions`. All use shared pagination and optional `load_id`.
-  Do not retain unused gas statistical/census models, DTOs, routes or importers.
+  Gas retail routes are separate and never install the `gas_retail_*` schema at startup.
+  Do not retain gas census models, DTOs, routes or importers.
   Never infer distributor coverage from contact addresses or retailer totals.
 - Gas network presence uses a separate, checksum-reviewed CNMC report annex for
   June 2019, covering natural-gas networks at most 4 bar. Install it explicitly
@@ -110,6 +157,66 @@ shared by both sectors, including when resizing or rotating the viewport.
   publish electronic-office censuses, personal identities or contact addresses.
   CNMC Data and other CNMC sources retain independent reuse conditions.
 
+- Install gas retail tables explicitly with `ingest-gas-retail`, using a bounded,
+  reviewed local evidence JSON and hash-verified source files. Keep immutable
+  loads, original monthly observations, source pages, names, units and audit
+  statuses. Clients use only the final month; sales require all three months.
+  Preserve zero, missing, suppressed, source-error and exclusive upper bounds
+  separately. Repeated source cells remain stored and block ambiguous aggregates.
+  Never reuse R2 IDs or infer name continuity. Separate retailers, groups, rest,
+  totals, direct consumers and unknown entities, liberalised versus whole-market
+  scopes, and the source's geography. Version 2 preserves source-specific audits,
+  unresolved-month cells, original units and review records from yearly CSVs.
+  Source-local extraction IDs are provenance, not company identities. Resolve
+  yearly CSV imports with an explicit, revision-bound `--identities` registry
+  before persistence; v2 reconciliation requires `reviewed_identity:` decisions
+  with source/page references. A reviewed company keeps one ID across reports;
+  preserve unresolved identity claims internally without creating public duplicates.
+  The same observed label may identify a group and a retailer in different tables;
+  mappings include the entity identity. Preserve old load hashes during explicit,
+  transactional schema migration and validate all quarterly CSV results against
+  monthly observations before import. Legacy period audits are conservative
+  summaries; they must not promote partial alternative sources or cells.
+  A partial audit or provisional literal mapping is not cleared for publication.
+  Keep source downloads, extracted observations, catalogues and manifests ignored
+  pending independent source reuse review. See `docs/gas-retail-data.md`.
+- Gas retail exposes `/v1/gas/retail/periods`, `/marketers`, `/series/{marketer_id}`
+  and `/revisions`; the independent dated CUR catalogue is `/v1/gas/reference-marketers`.
+  All references and joins are load-scoped. Lists default to 50, cap at 100 and
+  offset 10,000; series cap at 120 quarterly audit points with period bounds.
+  Reject geographic and electricity filters. V2 numeric values require reviewed
+  source/period/metric audits, reviewed tables and retailer coverage, plus review
+  of every contributing cell. Period summaries remain conservative: a partial
+  alternative must neither leak values nor suppress a different reviewed source.
+  Preserve alternatives independently. Legacy loads retain period-level gating.
+  Partial cells withhold their literals and numbers and block the aggregate and
+  share; expose only their IDs. Source-error records retain explicit diagnostic
+  provenance with null public values. Unresolved months remain null and never
+  become invented sales months. Preserve original literal units and cell review.
+  Keep source-defined geography and source notes, names, PDF pages, hashes,
+  original units/statuses and monthly provenance. Normalize sales to MWh while
+  retaining originals. Shares require exactly one same-source, period, metric
+  and market-scope explicit total with an exact positive denominator; zero
+  numerators remain zero. Never sum groups, Resto, retailers or ambiguous totals.
+  Gas catalogue IDs and dates do not imply electricity COR identities, statistical
+  identity continuity, legal designation start dates, prices or geographic coverage.
+  Existing electricity and network distribution contracts remain independent.
+  Marketer lists count and paginate distinct canonical company IDs, with
+  `company_name` and one deterministic latest eligible observed mapping. Search
+  canonical names and reviewed historical aliases without changing eligibility
+  or representative provenance. Stable-company series follow only explicit
+  reviewed identity mappings in the imported revision, preserving names per
+  source and keeping overlapping reports and market scopes separate.
+  Expose `identity_status` and `identity_review_note` on marketer and series DTOs.
+  V2 public company lists, search, counts and series require an explicit
+  `reviewed_identity` canonical entity. A company's reviewed mappings join its
+  reports under one canonical ID while preserving source audits and original names.
+  `source_local_identity` is provenance, never a public company option; direct
+  company-series requests for those IDs return 404. Keep source-local explicit
+  totals as denominator evidence. V1 snapshots retain `legacy_unspecified`
+  compatibility when selected, but must not define the current canonical catalogue.
+  Data review owns continuity; never fuzzy-merge labels in API or frontend.
+
 - A distributor (distribuidora; R1 for electricity) operates the physical network;
   a retailer (comercializadora; R2 for electricity) sells energy. Multiple
   distributors can coexist in one municipality. Gas network supply points are
@@ -129,12 +236,14 @@ shared by both sectors, including when resizing or rotating the viewport.
   Keep one point label per territory.
 - Electricity URLs preserve filters and history within `/`, `/evolution` and
   `/regulated-tariff`; navigation between pages starts without the previous
-  page's filters. Gas uses `/?sector=gas`; `/gas` is an entry alias. Legacy gas
-  evolution or regulated-tariff links return to the gas map. Sector changes must
+  page's filters. Gas uses `/?sector=gas`, `/evolution?sector=gas` and
+  `/regulated-tariff?sector=gas`; `/gas` is a map entry alias. Sector changes stay
+  on the current page, start with defaults and must
   not carry electricity identifiers or statistical filters into the gas contract.
 - Unknown browser routes redirect to `/` with history replacement. Serve static
   crawler files before the SPA fallback. Keep the sitemap in sync with public
-  pages and omit filters. Production builds use the frontend public directory;
+  pages, including the gas sector variants, and omit statistical/search filters.
+  Production builds use the frontend public directory;
   the map assets directory override applies only to local development.
 - The shared footer links to `/cookies`, `/terms` and GitHub and states
   independence from CNMC and companies. Information pages do not mount maps

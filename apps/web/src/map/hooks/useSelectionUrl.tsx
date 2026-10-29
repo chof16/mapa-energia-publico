@@ -14,10 +14,10 @@ export function useSelectionUrl(catalog: TerritoryCatalog | null) {
   const state = readUrlSelection(catalog, params);
   const exploration = readExploration(params);
   useEffect(() => {
-    if (exploration.sector !== 'gas') return;
+    if (exploration.sector !== 'gas' || location.pathname !== '/') return;
     const next = gasMapParams(params);
     if (next.toString() !== params.toString()) setParams(next, { replace: true });
-  }, [exploration.sector, params, setParams]);
+  }, [exploration.sector, location.pathname, params, setParams]);
 
   function navigate(selection: Territory[], view: TerritoryView = 'peninsula') {
     const nextParams = explorationParams(
@@ -28,9 +28,9 @@ export function useSelectionUrl(catalog: TerritoryCatalog | null) {
   }
 
   const explorationLink = (changes: Partial<Exploration> & { page?: ExplorationPage }) => {
-    if (changes.page) return exploration.sector === 'gas' ? '/?sector=gas' : explorationPaths[changes.page];
+    if (changes.page) return explorationPaths[changes.page] + (exploration.sector === 'gas' ? '?sector=gas' : '');
     if (changes.sector && changes.sector !== exploration.sector) {
-      return changes.sector === 'gas' ? '/?sector=gas' : location.pathname;
+      return location.pathname + (changes.sector === 'gas' ? '?sector=gas' : '');
     }
     const nextParams = explorationParams(params, { ...exploration, ...changes });
     return `${location.pathname}?${nextParams}`;

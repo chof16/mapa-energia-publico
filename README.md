@@ -1,7 +1,8 @@
 # Mapa de energía de España
 
 Mapa interactivo de distribuidoras de electricidad y gas con fuentes oficiales.
-Electricidad incluye además comercializadoras y evolución del mercado.
+Incluye evolución de comercializadoras y catálogos independientes de tarifa regulada
+para ambos sectores, con sus fuentes y límites de cobertura.
 Proyecto independiente: las fuentes citadas no avalan la aplicación.
 
 ## Funcionalidades
@@ -15,9 +16,20 @@ Proyecto independiente: las fuentes citadas no avalan la aplicación.
   de hasta cuatro comercializadoras en gráficos o tablas.
 - Catálogo independiente de comercializadoras de referencia de electricidad en
   la sección de tarifa regulada; no publica precios de tarifas.
+- Gas: clientes del último mes o ventas trimestrales en MWh, valores absolutos
+  o cuotas, gráfico o tabla y comparación de hasta cuatro comercializadoras
+  con una selección por empresa que reúne su historia revisada entre informes.
+  Desplegables de búsqueda y comparación compartidos con electricidad, sin
+  paginación visible; filtros de la serie e historial en la URL.
+- Catálogo independiente de comercializadoras de último recurso de gas (CUR/TUR),
+  con denominaciones y fechas de evidencia; sin precios ni equivalencias con COR.
 - En móvil, filtros, ficha de distribuidoras y leyenda plegables para dejar
   espacio al mapa, con navegación táctil y acceso a Canarias.
 - API de lectura documentada en `/docs` y `/openapi.json`.
+- API minorista de gas en `/v1/gas/retail`, con valores de tablas revisadas y
+  cobertura pendiente explícita; catálogo CUR independiente en
+  `/v1/gas/reference-marketers`. Requiere importación explícita.
+  Ver [uso de la interfaz y límites](docs/gas-retail-data.md#interfaz-web).
 - API eléctrica en `/v1/electricity`; `/v1/market` conserva compatibilidad con
   clientes anteriores. El frontend usa la ruta eléctrica explícita.
 - Backend de gas en `/v1/gas/distribution`: provincias, distribuidoras observadas
@@ -32,11 +44,22 @@ comerciales. El alcance y la preparación del backend de gas se detallan en la
 [guía de fuentes](docs/data-sources.md#gas-mapa-de-distribuidoras).
 
 Electricidad y gas comparten el mapa de `/`; `sector=gas` selecciona el mapa de
-distribuidoras de gas y `/gas` es un acceso alternativo. Evolución y tarifa regulada
-pertenecen a electricidad. Gas queda limitado a distribución; compras y ventas
-se tratarán en otra tarea. El anexo de redes no permite colorear municipios por
-código INE. Los enlaces antiguos de evolución o tarifa regulada con `sector=gas`
-redirigen al mapa de gas conservando la selección territorial.
+distribuidoras de gas y `/gas` es un acceso alternativo. Gas también tiene
+`/evolution?sector=gas` y `/regulated-tariff?sector=gas`, con la navegación y
+presentación compartidas. Cambiar de página o sector inicia los filtros de destino;
+Atrás/Adelante recupera la selección anterior. El mapa de gas sigue limitado a redes,
+sin mapa de comercializadoras ni estadísticas territoriales. Compras sigue pendiente.
+El anexo de redes no permite colorear municipios por código INE.
+
+La auditoría minorista de gas cuenta con 90 periodos (2003T4–2026T1). La interfaz
+indica la cobertura de la revisión cargada, distinguiendo el resumen trimestral
+de las auditorías de cada fuente y celda. Lo pendiente queda como huecos: nunca
+cero ni interpolación. Los ámbitos de mercado y la geografía
+histórica dependen de cada fuente; no se infiere comparabilidad nacional.
+Solo las correspondencias revisadas enlazan una empresa entre informes;
+los documentos conservan su procedencia y no generan empresas adicionales en el
+selector. Las empresas distintas y los grupos siguen separados. Los periodos
+sin datos utilizables permanecen como huecos en la historia de cada empresa.
 
 ## Arquitectura
 

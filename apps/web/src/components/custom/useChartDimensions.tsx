@@ -1,7 +1,7 @@
 import { useCallback, useLayoutEffect, useRef, useState } from 'react';
-import type { ChartDimensions } from '../interfaces/chart-dimensions';
+import type { ChartDimensions } from '../../interfaces/chart-dimensions';
 
-export function useChartDimensions() {
+export function useChartDimensions({ stableHeight = false }: { stableHeight?: boolean } = {}) {
   const ref = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState<ChartDimensions>({ width: 720, height: 320 });
   const update = useCallback(() => {
@@ -15,19 +15,22 @@ export function useChartDimensions() {
     const footer = node.closest('.app-shell')?.querySelector('.site-footer');
     const bottom = footer ? Math.min(window.innerHeight, footer.getBoundingClientRect().top) : window.innerHeight;
     const available = bottom - (chartTop ?? node.getBoundingClientRect().top + 110) - 24;
-    const height = Math.min(480, Math.max(260, Math.round(available)));
+    const height = stableHeight
+      ? Math.min(width < 600 ? 280 : 360, Math.max(260, Math.round(window.innerHeight - 500)))
+      : Math.min(480, Math.max(260, Math.round(available)));
     setDimensions((current) =>
       current.width === width && current.height === height
         ? current
         : { width, height },
     );
-  }, []);
+  }, [stableHeight]);
 
-  useLayoutEffect(update);
+  useLayoutEffect(() => { if (!stableHeight) update(); });
 
   useLayoutEffect(() => {
     const node = ref.current;
     if (!node) return;
+    update();
     const observer = new ResizeObserver(update);
     observer.observe(node);
     window.addEventListener('resize', update);

@@ -1,6 +1,6 @@
 # Energía Abierta
 
-> Mapa interactivo de España para explorar distribuidoras de electricidad y gas con fuentes oficiales; cuotas y evolución de comercializadoras solo para electricidad.
+> Mapa interactivo de España para explorar distribuidoras de electricidad y gas con fuentes oficiales, evolución minorista revisada y catálogos independientes de tarifa regulada.
 
 Proyecto independiente, sin afiliación con la CNMC, distribuidoras ni comercializadoras. Incluye la península, Baleares, Canarias, Ceuta y Melilla.
 
@@ -10,7 +10,9 @@ Una distribuidora opera la red física; una comercializadora vende energía. La 
 
 Electricidad conserva el mapa de distribuidoras, las cuotas nacionales o autonómicas, la evolución trimestral de comercializadoras y el catálogo independiente de comercializadoras de referencia (COR). Los nombres son los publicados en cada trimestre; no deben interpretarse como grupos empresariales históricos.
 
-Gas ofrece únicamente el mapa de distribuidoras, con los mismos controles territoriales, panel de evidencia y recuadro de Canarias. Se activa con `sector=gas` en el mapa. No ofrece estadísticas de comercializadoras, recuentos de clientes, ventas, cuotas, evolución, censos ni tarifa regulada.
+Gas comparte el mapa de distribuidoras, los controles territoriales, el panel de evidencia y el recuadro de Canarias. Sus vistas de evolución y tarifa regulada se activan también con `sector=gas`. Evolución permite clientes o ventas (MWh), valores absolutos o cuotas, gráficos o tablas y hasta cuatro empresas, con una selección por empresa que reúne su historia revisada entre informes. Usa desplegables de búsqueda compartidos con electricidad y filtros de serie en la URL. El catálogo CUR/TUR conserva nombres y evidencia fechada, sin precios ni equivalencias con COR eléctricas.
+
+La auditoría minorista contempla 90 periodos entre 2003T4 y 2026T1; la interfaz indica la cobertura de la revisión cargada por trimestre, fuente y celda. Los periodos pendientes permanecen como huecos; los límites exclusivos como <50 no son puntos exactos. Las identidades de empresa enlazan los informes correspondientes, conservando nombres originales y procedencia. Los IDs locales de observación no son opciones de empresa y el navegador no fusiona nombres. No se presupone cobertura completa ni comparabilidad nacional histórica. Mercado completo, liberalizado y regulado son ámbitos distintos; la geografía depende de la fuente. Compras y censos electrónicos siguen fuera de alcance.
 
 La evidencia de gas corresponde a junio de 2019 y a redes de gas natural de presión menor o igual a 4 bar. No representa redes actuales ni cobertura municipal. Los nombres son los observados en ese documento, sin equivalencias inferidas con empresas actuales. Las provincias sin evidencia siguen siendo desconocidas. Los límites cartográficos son actuales aunque el dato energético sea histórico.
 
@@ -21,18 +23,20 @@ No se comparan precios ni ofertas, no se tratan datos personales ni SIPS.
 - [Mapa de distribuidoras](https://energiaabierta.com/): presencia provincial documentada de electricidad y gas; cuotas de comercializadoras solo para electricidad.
 - [Evolución de comercializadoras eléctricas](https://energiaabierta.com/evolution): comparación trimestral en gráficos y tablas.
 - [Tarifa regulada eléctrica](https://energiaabierta.com/regulated-tariff): catálogo independiente de comercializadoras de referencia.
+- [Evolución de comercializadoras de gas](https://energiaabierta.com/evolution?sector=gas): clientes y ventas revisados, con cobertura pendiente explícita.
+- [Tarifa regulada de gas](https://energiaabierta.com/regulated-tariff?sector=gas): catálogo independiente de comercializadoras de último recurso.
 - [Términos y condiciones](https://energiaabierta.com/terms): alcance, independencia, atribución y condiciones de uso.
 - [Cookies y almacenamiento](https://energiaabierta.com/cookies): información sobre almacenamiento y recursos externos.
 
-`/gas` es un alias que redirige al mapa con gas seleccionado; no es otra aplicación ni una página canónica. Los enlaces antiguos de evolución o tarifa regulada con `sector=gas` también redirigen al mapa de gas.
+`/gas` es un alias que redirige al mapa con gas seleccionado; no es otra aplicación ni una página canónica. Evolución y tarifa regulada conservan el sector en su ruta. La navegación entre páginas o sectores inicia los filtros predeterminados; Atrás/Adelante recupera los anteriores.
 
 ## Fuentes y reutilización
 
 Las estadísticas eléctricas proceden de CNMC Data; la cartografía, de IGN/CNIG, con códigos del INE. La evidencia de distribución tiene fuentes y condiciones propias. Consultar siempre la fuente, fecha, revisión y confianza; no asumir actualizaciones automáticas.
 
-La API eléctrica canónica es `/v1/electricity`, con `/v1/market` como alias compatible obsoleto. Gas solo publica evidencia de distribuidoras mediante `/v1/gas/distribution/provinces`, `/v1/gas/distribution/provinces/{province_code}` y `/v1/gas/distribution/revisions`.
+La API eléctrica canónica es `/v1/electricity`, con `/v1/market` como alias compatible obsoleto. Gas publica evidencia de distribuidoras mediante `/v1/gas/distribution`; las estadísticas revisadas usan `/v1/gas/retail` y el catálogo CUR independiente usa `/v1/gas/reference-marketers`. Las tablas requieren importación explícita.
 
-La licencia AGPL-3.0-only cubre el código original, no todos los datos. Cada fuente conserva sus propias condiciones. Las condiciones de reutilización del anexo territorial de gas están pendientes de aclaración. La base combinada no está validada íntegramente para redistribución.
+La licencia AGPL-3.0-only cubre el código original, no todos los datos. Cada fuente conserva sus propias condiciones. La reutilización del anexo territorial, los informes minoristas y el catálogo CUR de gas sigue pendiente de revisión independiente. La base combinada no está validada íntegramente para redistribución.
 
 - [Código fuente](https://github.com/chof16/mapa-energia-publico): código, ejecución local y contribuciones.
 - [Fuentes y límites de reutilización](https://github.com/chof16/mapa-energia-publico/blob/main/docs/data-sources.md): procedencia, atribución y limitaciones.
