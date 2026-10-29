@@ -16,6 +16,7 @@ from electricity_map_api.database import create_database_engine, create_postgres
 from electricity_map_api.distribution.router import router as distribution_router
 from electricity_map_api.electricity.router import router as electricity_router
 from electricity_map_api.exceptions import APIError, api_error_handler, validation_error_handler
+from electricity_map_api.gas.retail.router import router as gas_retail_router
 from electricity_map_api.gas.router import router as gas_router
 from electricity_map_api.metadata.router import router as metadata_router
 from electricity_map_api.rate_limit import InMemoryRateLimiter
@@ -53,7 +54,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     application = FastAPI(
         title="Electricity Map API",
         version=version("electricity-map-api"),
-        description="Public API for Spanish electricity data and historical gas distributor network evidence.",
+        description="Public API for electricity, historical gas networks and reviewed gas retail evidence.",
         lifespan=lifespan,
     )
     application.state.settings = app_settings
@@ -74,6 +75,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     application.include_router(electricity_router, prefix="/v1/market", deprecated=True)
     application.include_router(distribution_router)
     application.include_router(gas_router)
+    application.include_router(gas_retail_router)
     return application
 
 

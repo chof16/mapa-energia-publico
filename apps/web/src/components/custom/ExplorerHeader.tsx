@@ -31,18 +31,18 @@ export function ExplorerHeader({
         >
           Mapa
         </Link>
-        {sector === 'electricidad' && <><Link
+        <Link
           to={explorationLink({ page: 'evolucion' })}
           aria-current={page === 'evolucion' ? 'page' : undefined}
         >
-          Evolución de comercializadoras
+          Evolución
         </Link>
         <Link
           to={explorationLink({ page: 'referencia' })}
           aria-current={page === 'referencia' ? 'page' : undefined}
         >
           Tarifa regulada
-        </Link></>}
+        </Link>
       </nav>
       <nav className="sector-switch" aria-label="Sector energético">
         <Link

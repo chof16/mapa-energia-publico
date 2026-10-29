@@ -223,7 +223,7 @@ export function SearchSelector({
             >
               <span className="selector-option-title">{option.title}</span>
               {showCode && <span className="selector-code">{option.code}</span>}
-              {optionDetail && <span className="selector-option-detail">{optionDetail(option.code)}</span>}
+              {optionDetail?.(option.code) && <span className="selector-option-detail">{optionDetail(option.code)}</span>}
             </li>
           ))}
           {!results.length && (

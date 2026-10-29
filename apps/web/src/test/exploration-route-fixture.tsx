@@ -9,6 +9,7 @@ import { territoryLabels } from './fixtures/territory-labels';
 import { MapBoundary } from './maplibre-boundary';
 import { electricityResponse } from './fixtures/electricity';
 import { gasDistributionResponse } from './fixtures/gas-distribution';
+import { gasRetailResponse } from './fixtures/gas-retail';
 
 export function choosePublished(label: string, value: string) {
   const input = screen.getByRole('combobox', { name: label });
@@ -87,7 +88,8 @@ beforeEach(() => {
         ? provinceSummaryResponse
         : config.url?.includes('/v1/electricity/')
           ? electricityResponse(config.url, config.params)
-          : config.url?.includes('/v1/gas/distribution/') ? gasDistributionResponse(config.url) : territoryLabels,
+          : config.url?.includes('/v1/gas/distribution/') ? gasDistributionResponse(config.url)
+            : config.url?.includes('/v1/gas/') ? gasRetailResponse(config.url, config.params) : territoryLabels,
     ),
     status: 200,
     statusText: 'OK',
@@ -119,6 +121,10 @@ export function renderRoute(router: ReturnType<typeof createMemoryRouter>) {
       <RouterProvider router={router} />
     </QueryClientProvider>,
   );
+}
+
+export function seedQueryCache(key: readonly unknown[], data: unknown) {
+  queryClient.setQueryData(key, data);
 }
 
 export async function renderExplorer(entry = '/') {

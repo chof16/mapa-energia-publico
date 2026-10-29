@@ -47,15 +47,23 @@ a una prohibición confirmada; debe resolverse antes de publicar el contenido af
 
 ## Gas: mapa de distribuidoras
 
-Gas se limita al mapa de presencia provincial de distribuidoras y a su procedencia
+La interfaz pública de gas muestra presencia provincial de distribuidoras y su procedencia
 histórica. La web utiliza el mismo mapa y selección territorial que electricidad
-en `/?sector=gas`; `/gas` es un acceso alternativo. Las estadísticas de
-comercializadoras, clientes, cuotas, energía, censos y tarifa regulada de gas quedan
-fuera del alcance actual. Compras y ventas se tratarán en una tarea posterior.
+en `/?sector=gas`; `/gas` es un acceso alternativo. La evolución minorista revisada
+está en `/evolution?sector=gas` y el catálogo CUR en `/regulated-tariff?sector=gas`.
+La preparación, API e interfaz de clientes, ventas y catálogo CUR se documentan
+en [datos minoristas de gas](gas-retail-data.md):
+usa evidencia privada, auditorías independientes y un esquema separado, todavía
+sin revisión histórica completa ni autorización de redistribución. Compras y
+censos electrónicos siguen fuera de alcance.
 
-La API de gas publica únicamente los tres endpoints de
-`/v1/gas/distribution` descritos abajo. No se mantienen modelos, tablas de creación,
-importadores ni refrescos de estadísticas comerciales o censos de gas.
+La API de redes mantiene los tres endpoints de `/v1/gas/distribution` descritos
+abajo. El backend independiente `/v1/gas/retail` ofrece periodos, nombres
+observados, series y revisiones, con valores exclusivamente de tablas revisadas;
+`/v1/gas/reference-marketers` conserva evidencia CUR fechada. La ingesta explícita
+`ingest-gas-retail` prepara sus tablas aditivas: no se instalan esquemas al arrancar.
+La cobertura parcial y la reutilización pendiente siguen explícitas. No se
+importan censos de gas ni se realizan refrescos minoristas automáticos.
 El módulo eléctrico usa `/v1/electricity`; `/v1/market` conserva compatibilidad
 para clientes antiguos. Su parámetro heredado `sector=gas` no consulta las
 tablas de redes ni equivale al mapa de distribuidoras.

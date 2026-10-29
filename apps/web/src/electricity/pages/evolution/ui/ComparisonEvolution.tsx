@@ -1,5 +1,5 @@
 import { RetryButton } from '../../../../components/custom/RetryButton';
-import { ChartAxes } from '../../../../components/custom/ChartAxes';
+import { EvolutionChart } from '../../../../components/custom/EvolutionChart';
 import { TableSortControls } from './TableSortControls';
 import { useState } from 'react';
 import { useQueries } from '@tanstack/react-query';
@@ -9,7 +9,7 @@ import type { ElectricityState } from '../../../interfaces/electricity-state';
 import { formatMarketerLabel, formatQuarter, formatRevision } from '../../../lib/electricity-format';
 import { formatShare } from '../../../lib/electricity-style';
 import { ElectricitySource } from '../../../components/ElectricitySource';
-import type { ChartDimensions } from '../../../interfaces/chart-dimensions';
+import type { ChartDimensions } from '../../../../interfaces/chart-dimensions';
 import { shareAxisMaximum } from '../../../lib/share-axis';
 
 const colors = ['#185eaa', '#b24c22', '#6663a8', '#98620c'];
@@ -139,107 +139,22 @@ export function ComparisonEvolution({
         </div>
       )}
       {view === 'chart' && hasPrimaryData && (
-        <svg
-          className="supplies-chart"
-          viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}
-          style={{ height: dimensions.height }}
-          role="img"
-          aria-label={comparing
+        <EvolutionChart
+          {...dimensions}
+          periods={periods.map((row) => row.period)}
+          series={series}
+          max={max}
+          share={share}
+          x={x}
+          y={y}
+          onActive={setActive}
+          label={comparing
             ? `Comparación de ${share ? 'cuotas' : 'suministros'} en ${area}`
             : `Evolución de ${share ? 'cuota' : 'suministros'} de ${companyLabel(electricity.marketer)} en ${area}`}
-        >
-          <title>
-            Una línea por comercializadora; los huecos indican que no se puede mostrar un valor.
-          </title>
-          <ChartAxes
-            periods={periods.map((row) => row.period)}
-            max={max}
-            share={share}
-            width={dimensions.width}
-            height={dimensions.height}
-            x={x}
-            y={y}
-          />
-          {series.map((item, index) => {
-            const segments: string[] = [];
-            let previous: number | null = null;
-            for (const row of periods) {
-              const value = item.values.get(row.period)?.value;
-              if (value == null) {
-                previous = null;
-                continue;
-              }
-              const coordinates = `${x(row.period)},${y(value)}`;
-              if (
-                previous !== null &&
-                quarterIndex(row.period) === previous + 1
-              )
-                segments[segments.length - 1] += ` ${coordinates}`;
-              else segments.push(coordinates);
-              previous = quarterIndex(row.period);
-            }
-            return (
-              <g key={item.code}>
-                {segments.map((points, segment) => (
-                  <polyline
-                    key={segment}
-                    points={points}
-                    fill="none"
-                    stroke={colors[index]}
-                    strokeWidth="2.5"
-                    strokeDasharray={
-                      index ? `${8 - index} ${index + 2}` : undefined
-                    }
-                  />
-                ))}
-                {periods.map((row) => {
-                  const value = item.values.get(row.period)?.value;
-                  if (value == null) return null;
-                  return (
-                    <g key={row.period}>
-                      <circle
-                        cx={x(row.period)}
-                        cy={y(value)}
-                        r="3"
-                        fill={colors[index]}
-                      />
-                      <circle
-                        cx={x(row.period)}
-                        cy={y(value)}
-                        r="9"
-                        fill="transparent"
-                        tabIndex={0}
-                        role="button"
-                        className="chart-point-target"
-                        aria-label={comparing
-                          ? `${companyLabel(item.code)}: ${formatQuarter(row.period)}, ${format(value)}${share ? '' : ' suministros'}`
-                          : `${formatQuarter(row.period)}: ${format(value)}${share ? '' : ' suministros'}`}
-                        onMouseEnter={() =>
-                          setActive({ code: item.code, period: row.period })
-                        }
-                        onMouseLeave={() => setActive(null)}
-                        onFocus={() =>
-                          setActive({ code: item.code, period: row.period })
-                        }
-                        onBlur={() => setActive(null)}
-                        onClick={() =>
-                          setActive({ code: item.code, period: row.period })
-                        }
-                        onKeyDown={(event) => {
-                          if (event.key === 'Escape') setActive(null);
-                          if (event.key === 'Enter' || event.key === ' ') {
-                            event.preventDefault();
-                            setActive({ code: item.code, period: row.period });
-                          }
-                        }}
-                      />
-                    </g>
-                  );
-                })}
-              </g>
-            );
-          })}
-        </svg>
+          pointLabel={(code, period, value) => comparing
+            ? `${companyLabel(code)}: ${formatQuarter(period)}, ${format(value)}${share ? '' : ' suministros'}`
+            : `${formatQuarter(period)}: ${format(value)}${share ? '' : ' suministros'}`}
+        />
       )}
       {series.map((item) =>
         item.query.isError ||

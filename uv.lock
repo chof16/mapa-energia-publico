@@ -126,10 +126,14 @@ version = "0.1.0"
 source = { editable = "packages/ingestion" }
 dependencies = [
     { name = "electricity-map-domain" },
+    { name = "pydantic" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "electricity-map-domain", editable = "packages/domain" }]
+requires-dist = [
+    { name = "electricity-map-domain", editable = "packages/domain" },
+    { name = "pydantic", specifier = ">=2.10" },
+]
 
 [[package]]
 name = "electricity-map-pipeline"

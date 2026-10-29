@@ -17,4 +17,6 @@ class MetadataResponse(ResponseDTO):
     tiles: str
     available_sectors: tuple[EnergySector, ...] = (EnergySector.ELECTRICITY, EnergySector.GAS)
     gas_distribution_api: Literal["/v1/gas/distribution"] = "/v1/gas/distribution"
+    gas_retail_api: Literal["/v1/gas/retail"] = "/v1/gas/retail"
+    gas_reference_marketers_api: Literal["/v1/gas/reference-marketers"] = "/v1/gas/reference-marketers"
     electricity_api: Literal["/v1/electricity"] = "/v1/electricity"

@@ -110,16 +110,16 @@ describe('map home route', () => {
     ).toBeVisible();
     choosePublished('Trimestre publicado', '2025T1');
     fireEvent.click(
-      screen.getByRole('link', { name: 'Evolución de comercializadoras' }),
+      screen.getByRole('link', { name: 'Evolución' }),
     );
     expect(screen.getByRole('group', { name: 'Dato de evolución' })).toBeVisible();
     expect(screen.queryByRole('heading', { name: 'Suministros · España' })).not.toBeInTheDocument();
     expect(router.state.location.pathname).toBe('/evolution');
     expect(router.state.location.search).toBe('');
     fireEvent.click(screen.getByRole('link', { name: 'Gas' }));
-    expect(screen.getByRole('heading', { name: 'Explorar zonas de gas' })).toBeVisible();
+    expect(screen.getByRole('group', { name: 'Métrica de gas' })).toBeVisible();
     expect(screen.queryByRole('combobox', { name: 'Comercializadora · código R2' })).not.toBeInTheDocument();
-    expect(router.state.location.pathname).toBe('/');
+    expect(router.state.location.pathname).toBe('/evolution');
     expect(router.state.location.search).toBe('?sector=gas');
     await act(() => router.navigate(-1));
     expect(

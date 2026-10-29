@@ -63,7 +63,7 @@ describe('public reference marketer page', () => {
     expect(screen.getByText(/revisado el/)).toHaveTextContent('4 oct 2026');
     const navigation = screen.getByRole('navigation', { name: 'Navegación principal' });
     expect(within(navigation).getByRole('link', { name: 'Tarifa regulada' })).toHaveAttribute('aria-current', 'page');
-    for (const [name, path] of [['Mapa', '/'], ['Evolución de comercializadoras', '/evolution']]) {
+    for (const [name, path] of [['Mapa', '/'], ['Evolución', '/evolution']]) {
       const url = new URL(within(navigation).getByRole('link', { name }).getAttribute('href')!, 'http://localhost');
       expect(url.pathname).toBe(path);
       expect(url.searchParams.has('active_tab')).toBe(false);
